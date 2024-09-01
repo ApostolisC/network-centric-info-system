@@ -1,0 +1,614 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+    color: #333;
+    width: 90vw;
+    margin: 1vw auto;
+
+}
+
+.dashboard {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.dashboard-header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-width: 80vw;
+    background-color: #0056b3;
+    z-index: 1001;
+    padding: 25px;
+    box-shadow: 10px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+#form-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 50px;
+}
+
+#form-container form{
+    margin-left: 10px;
+}
+
+.title{
+    color:white;
+    font: 2.5em Arial, sans-serif;
+
+}
+
+#form-container{
+    margin: 0;
+}
+
+#form-container button{
+    background-color: rgb(0, 123, 255);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0px 0px 0px 1px rgba(255,255,255,1 );
+    border-radius: 10px;
+    transition: background-color 0.2s;
+}
+
+#form-container button:hover{
+    box-shadow: 0px 0px 0px 2px rgba(0,123,255,1 );
+    background-color: #0056b3;
+    transition: all 0.2s;
+}
+
+
+
+.admin-nav {
+    background-color: #fff;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.admin-nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-nav ul li {
+    margin: 5px 0;
+}
+
+.admin-nav ul li a {
+    color: #333;
+    text-decoration: none;
+    display: block;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #f7f7f7;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.admin-nav ul li a:hover {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.new-accounts-container, .user-management, .gym-info-management {
+    overflow: auto; /* Add scrollbars for the entire container */
+    padding: 20px;
+    background-color: #fff;
+    border-bottom: 1px solid #ddd;
+
+}
+
+.new-accounts-container h2 {
+    color: #333;
+    margin-bottom: 30px;
+}
+
+.new-accounts {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-height: 100%; /* Allow it to take up the full height available */
+    overflow: auto; /* Add scrollbars for the content */
+}
+
+#account-info{
+    margin-bottom: 20px;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table th, table td {
+    text-align: left;
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+}
+
+table th {
+    background-color: #f0f0f0;
+}
+
+table tr:hover {
+    background-color: #f5f5f5;
+}
+
+.new-account-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.new-account-actions button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    font-size: 14px;
+}
+
+.new-account-actions .accept-btn {
+    background-color: #28a745; /* Green */
+    color: white;
+}
+
+.new-account-actions .accept-btn:hover {
+    background-color: #218838;
+}
+
+.new-account-actions .reject-btn {
+    background-color: #dc3545; /* Red */
+    color: white;
+}
+
+.new-account-actions .reject-btn:hover {
+    background-color: #c82333;
+}
+
+.section {
+    padding: 20px;
+    background-color: #fff;
+    margin-top: 20px;
+    border-radius: 5px;
+    min-height: 60vh;
+    border: 2px solid lightblue;
+    box-shadow: 10px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+.logout button {
+    margin: 25px 20px 20px 0px;
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.logout button:hover {
+    background-color: #0056b3;
+}
+
+/* Popup styling */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    z-index: 1000;
+}
+
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
+    display: none;
+    z-index: 1001;
+}
+
+.popup h3 {
+    margin-top: 0;
+}
+
+.popup-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.popup-buttons button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 14px;
+    margin: 0px 0 20px 0;
+}
+
+.popup-buttons .approve {
+    background-color: #28a745;
+    color: white;
+}
+
+.popup-buttons .approve:hover {
+    background-color: #218838;
+}
+
+.popup-buttons .reject {
+    background-color: #dc3545;
+    color: white;
+}
+
+.popup-buttons .reject:hover {
+    background-color: #c82333;
+}
+
+.create-account-popup{
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    color: #000;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1001;
+    width: 80%;
+    max-width: 800px;
+    height: 80vh;
+    overflow-y: scroll;
+}
+
+.create-account-popup h3 {
+    margin-top: 0;
+    color: #007bff; /* Blue for header */
+}
+
+.create-account-popup form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    height: 50vh;
+
+}
+
+.create-account-popup label {
+    font-weight: bold;
+}
+
+.create-account-popup input[type="text"],
+.create-account-popup input[type="email"],
+.create-account-popup select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.create-account-popup input[type="text"]:focus,
+.create-account-popup input[type="email"]:focus,
+.create-account-popup select:focus {
+    border-color: #007bff; /* Blue border on focus */
+    outline: none;
+}
+
+.create-account-popup .popup-buttons{
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.create-account-popup .popup-buttons button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 14px;
+}
+
+.create-account-popup input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.create-account-popup #save-add-user-button {
+    background-color: #4CAF50; /* Green */
+    color: white;
+}
+
+.create-account-popup #save-add-user-button:hover {
+    background-color: #45a049;
+}
+
+.create-account-popup #cancel-add-user-button {
+    background-color: #f44336; /* Red */
+    color: white;
+}
+
+.create-account-popup #cancel-add-user-button:hover {
+    background-color: #e53935;
+}
+
+
+
+.role-popup {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    color: #000;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1001;
+}
+
+.role-popup h3 {
+    margin-top: 0;
+}
+
+.role-popup button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    margin: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.role-popup .confirm-btn {
+    background-color: #4CAF50; /* Green */
+    color: white;
+}
+
+.role-popup .confirm-btn:hover {
+    background-color: #45a049;
+}
+
+.role-popup .cancel-btn {
+    background-color: #f44336; /* Red */
+    color: white;
+}
+
+.role-popup .cancel-btn:hover {
+    background-color: #e53935;
+}
+
+.edit-popup {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    color: #333;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1001;
+    width: 80%;
+    max-width: 800px;
+    height: 80vh;
+    overflow-y: scroll;
+}
+
+.edit-popup h3 {
+    margin-top: 0;
+    color: #007bff; /* Blue for header */
+}
+
+.edit-popup form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    height: 50vh;
+
+}
+
+.edit-popup label {
+    font-weight: bold;
+}
+
+.edit-popup input[type="text"],
+.edit-popup input[type="email"],
+.edit-popup select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.edit-popup input[type="text"]:focus,
+.edit-popup input[type="email"]:focus,
+.edit-popup select:focus {
+    border-color: #007bff; /* Blue border on focus */
+    outline: none;
+}
+
+.edit-popup .popup-buttons{
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.edit-btn, .change-role-btn, .edit-trainer-btn, .edit-program-btn, .edit-schedule-btn {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 14px;
+    background-color: #007bff;
+    color: white;
+}
+
+.edit-popup .popup-buttons button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 14px;
+}
+
+.edit-popup .popup-buttons .save-btn {
+    background-color: #4CAF50; /* Green */
+    color: white;
+}
+
+.edit-popup .popup-buttons .save-btn:hover {
+    background-color: #45a049;
+}
+
+.edit-popup .popup-buttons .cancel-btn {
+    background-color: #f44336; /* Red */
+    color: white;
+}
+
+.edit-popup .popup-buttons .cancel-btn:hover {
+    background-color: #e53935;
+}
+
+
+
+
+.gym-info-management{
+    overflow-y: scroll;
+}
+
+/* Tab navigation */
+.tab-container {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 1em;
+}
+
+.tab-link {
+    background-color: #f1f1f1;
+    color: black;
+    padding: 10px 20px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.tab-link.active {
+    background-color: #ddd;
+}
+
+.tab-link:not(:last-child) {
+    border-right: none;
+}
+
+.tab-link:hover {
+    background-color: #ccc;
+}
+
+/* Tab content */
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+
+.gym-info-mng-title-cont{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.gym-info-mng-title-cont button{
+    background-color: rgb(0, 123, 255);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.add-expand-btns{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.add-expand-btns #add-user-btn{
+    background-color: rgb(0, 123, 255);
+    color: white;
+    padding: 6px 12px;
+    margin-right: 20px;
+    border: 2px solid;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+
+.delete-btn{
+    border: none;
+    padding: 10px;
+    background-color:rgba(0, 0, 0, 0);
+}
+
+.delete-btn:hover{
+    background-color: rgba(0,0,0, 0.1);
+
+
+}
+
+.expand-btn{
+    border: 2px solid #0056b3;
+    border-radius: 5px;
+    color:rgb(0, 123, 255);
+    padding: 5px;
+    background-color:rgba(0, 0, 0, 0);
+    justify-content: center;
+
+}
+
+.title-expand-container{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.title-expand-container h2{
+    margin: 0;
+    text-wrap: none;
+}

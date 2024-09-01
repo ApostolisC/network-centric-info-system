@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    <link href="https://fonts.googleapis.com/css?family=Oxygen:400,300,700" rel="stylesheet" type="text/css">
+    <link href="https://code.ionicframework.com/ionicons/1.4.1/css/ionicons.min.css" rel="stylesheet" type="text/css">
+    <link href="/static/styles/login_signup.css" rel="stylesheet">
+</head>
+<body>
+    <div class="signin cf">
+        <div class="avatar"></div>
+        <form id="login-form">
+            <div class="inputrow">
+                <input type="text" id="username" placeholder="Username" required>
+                <label class="ion-person" for="username"></label>
+            </div>
+            <div class="inputrow">
+                <input type="password" id="passwd" placeholder="Password" required>
+                <label class="ion-locked" for="passwd"></label>
+            </div>
+            <input type="submit" value="Login" id="login-btn">
+        </form>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#login-form").on('submit', function(event) {
+                event.preventDefault();  // Prevent the default form submission
+
+                var username = $("#username").val();
+                var password = $("#passwd").val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "http://localhost:5000/login/",
+                    contentType: "application/json",
+                    dataType: "json",
+                    data: JSON.stringify({
+                        username: username,
+                        password: password
+                    }),
+                    success: function(response) {
+                        localStorage.setItem('token', response.access_token);
+                        console.log("Login successful");
+                        window.location.href = 'http://localhost:5000/';  // Redirect to index page
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("AJAX request failed:", error);
+                        alert('Login failed');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
