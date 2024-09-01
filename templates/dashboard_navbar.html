@@ -1,0 +1,22 @@
+<div class="dashboard-header">
+    <h1 class="title"><a style="text-decoration:none; color: white" href="/dashboard">Admin Dashboard</a></h1>
+    <div id="form-container">
+        <form id="news-form" action="/dashboard/news" method="GET">
+            <button type="submit"><i class="fa-solid fa-newspaper"></i>
+            </button>
+        </form>
+
+        <form id="offers-form" action="/offers" method="POST">
+            <button type="submit"><i class="fa-solid fa-gift"></i>
+            </button>
+        </form>
+
+        <form id="home-form" action="/" method="GET">
+            <button type="submit"> <i class="fa fa-home"></i></button>
+        </form>
+
+        <form id="logout-form" action="/logout" method="POST">
+            <button type="submit">Logout</button>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navigation Bar</title>
+    <!-- Font Awesome CDN for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #333;
+            padding: 10px 20px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        .navbar .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            position: absolute;
+            left: 10px;
+            transition: transform 1s;
+        }
+        .navbar .logo img {
+            width: 40px;
+            height: 40px;
+            vertical-align: middle;
+            transition: transform 1s;
+        }
+        .navbar ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            gap: 20px;
+            flex: 1;
+            justify-content: center;
+        }
+        .navbar ul li {
+            display: inline;
+        }
+        .navbar ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 19px;
+            padding: 10px;
+        }
+        .navbar ul li a:hover {
+            background-color: #575757;
+            border-radius: 4px;
+        }
+        .navbar .profile-btn {
+            font-size: 20px;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
+        .navbar .profile-btn:hover {
+            background-color: #575757;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="#" class="logo" id="duck">
+            <img src="/static/images/logo.png" alt="Duck">
+        </a>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/services">Our Services</a></li>
+            <li><a href="/bookings">Create an Appointment</a></li>
+        </ul>
+        <a href="/profile" class="profile-btn"><i class="fas fa-user"></i></a>
+    </nav>
+
+    <script>
+        document.getElementById('duck').addEventListener('click', function() {
+            const duck = this;
+            const duckImg = duck.querySelector('img');
+            const originalPosition = duck.getBoundingClientRect().left;
+            const homeLink = document.querySelector('.navbar ul li a');
+            const homePosition = homeLink.getBoundingClientRect().left;
+            const moveDuration = 1000; // Duration of the animation in milliseconds
+
+            const moveDistance = homePosition - originalPosition;
+            const startTime = performance.now();
+
+            function animateDuck(timestamp) {
+                const elapsed = timestamp - startTime;
+                const progress = Math.min(elapsed / moveDuration, 1);
+
+                // Move the duck
+                duck.style.transform = `translateX(${moveDistance * progress}px)`;
+                duckImg.style.transform = progress < 1 ? 'rotateY(0deg)' : 'rotateY(180deg)';
+
+                if (progress < 1) {
+                    requestAnimationFrame(animateDuck);
+                } else {
+                    // Wait for 1 second, then return
+                    setTimeout(() => {
+                        const returnStartTime = performance.now();
+                        function returnDuck(timestamp) {
+                            const elapsedReturn = timestamp - returnStartTime;
+                            const returnProgress = Math.min(elapsedReturn / moveDuration, 1);
+
+                            duck.style.transform = `translateX(${moveDistance * (1 - returnProgress)}px)`;
+                            duckImg.style.transform = returnProgress < 1 ? 'rotateY(180deg)' : 'rotateY(0deg)';
+
+                            if (returnProgress < 1) {
+                                requestAnimationFrame(returnDuck);
+                            }
+                        }
+                        requestAnimationFrame(returnDuck);
+                    }, 1000); // Stay in the center for 1 second
+                }
+            }
+
+            requestAnimationFrame(animateDuck);
+        });
+
+        fetch('/check-if-admin')
+            .then(response => {
+                // if "message" inside response is True, then we are signed in
+                if (response.ok) {
+                    // read json response "message"
+                    response.json().then(data => {
+                        console.log(data.message);
+                        if (data.message == "True") {
+                            const profileBtn = document.querySelector('.profile-btn');
+                            profileBtn.insertAdjacentHTML('afterend', '<a href="/dashboard" class="profile-btn"><i class="fas fa-dashboard"></i></a>');
+                        }
+                    });
+                }
+            });
+
+    </script>
+</body>
+</html>

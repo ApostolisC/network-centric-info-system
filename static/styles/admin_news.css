@@ -1,0 +1,209 @@
+.news-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.news-header h1{
+    margin: 0;
+}
+
+.news-header button{
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    border: none;
+}
+
+/* Main container styling */
+.main_container {
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    border: 2px solid #043162;
+    min-height: 100vh;
+    box-shadow: #043162 0px 0px 10px;
+}
+
+/* News container styling */
+.news-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));  /* Responsive grid layout */
+    grid-gap: 20px;  /* Spacing between grid items */
+    width: 100%;
+}
+
+/* Each news item styling */
+.news-item {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    background-size: cover;
+    background-position: center;
+    height: 200px;  /* Fixed height for the grid items */
+}
+
+/* Overlay styling */
+.news-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 96%;
+    height: 94%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 10px;
+    color: white;
+}
+
+/* Title styling */
+.news-title {
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+/* Buttons container styling */
+.news-buttons {
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Individual button styling */
+.news-buttons .btn {
+    background-color: rgba(255, 255, 255, 0.8);
+    margin-left: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: black;
+    border-radius: 5%;
+}
+
+.news-buttons .btn:hover {
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+/* edit-news-popup */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+
+/* Container styling */
+.popup {
+    display: none; /* Hide by default; show when needed */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 86vh;
+    overflow-y: scroll;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    padding: 20px;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Title styling */
+.popup h3 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333;
+    text-align: center;
+}
+
+/* Form labels */
+.popup-content label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #555;
+}
+
+/* Input fields */
+.popup-content input[type="text"],
+.popup-content input[type="date"],
+.popup-content textarea {
+    width: calc(100% - 12px);
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+.popup-content img {
+    width: 200px;
+}
+
+/* Textarea styling */
+.popup-content textarea {
+    height: 80px;
+    resize: vertical;
+}
+
+/* Button styling */
+.popup .btn, .popup .btn-close {
+    display: inline-block;
+    width: 100%;
+    padding: 12px;
+    margin-top: 5px;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+.btn{
+    background-color: #007bff;
+}
+
+.btn-close {
+    background-color: red
+}
+
+/* Button hover effect */
+.popup .btn:hover {
+    background-color: #0056b3;
+}
+
+/* Focus effect on inputs */
+.popup-content input[type="text"]:focus,
+.popup-content textarea:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.image-header{
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.image-header #edit-news-image-input{
+    margin-left: 15px;
+    margin-bottom: 7px;
+}

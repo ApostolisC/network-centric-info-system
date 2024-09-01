@@ -1,0 +1,1490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="icon" type="image/x-icon" href="/static/images/logo.png">
+    <link rel="stylesheet" href="/static/styles/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+
+    {% include 'dashboard_navbar.html' %}
+    <div class="dashboard">
+
+
+        <div class="section new-accounts-container">
+            <div class="title-expand-container">
+                <h2 id="new-accounts-container-title">Pending Account Approvals</h2>
+                <button class="expand-btn fa fa-minus" id="expand-new-accounts-container"></button>
+            </div>
+            <table id="accounts-table">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Name</th>
+                        <th>Surname</th>
+                        <th>Country</th>
+                        <th>City</th>
+                        <th>Address</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Rows will be dynamically loaded here -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section user-management">
+            <div class="title-expand-container">
+                <h2 id="user-management-container-title" >User Management</h2>
+                <div class="add-expand-btns">
+                    <button id="add-user-btn"><i class="fas fa-plus"></i></button>
+                    <button class="expand-btn fa fa-minus" id="expand-user-management-container"></button>
+                </div>
+            </div>
+            <div id="user-management-list">
+                <!-- User table will be dynamically loaded here -->
+            </div>
+        </div>
+
+
+        <div class="section gym-info-management">
+            <div class="title-expand-container">
+                <h2 id="gym-info-management-title" >Gym Information Management</h2>
+                <button class="expand-btn fa fa-minus" id="expand-gym-info-management-container"></button>
+            </div>
+            <!-- Tab navigation -->
+            <div class="tab-container">
+                <button class="tab-link active" onclick="openTab(event, 'trainers')">Trainers</button>
+                <button class="tab-link" onclick="openTab(event, 'programs')">Programs</button>
+                <button class="tab-link" onclick="openTab(event, 'schedule')">Time Schedule</button>
+            </div>
+            
+            <!-- Tab content -->
+            <div id="trainers" class="tab-content", style="display:block;">
+                <div class="gym-info-mng-title-cont">
+                    <h3>Trainers</h3>
+                    <button id="add-trainer-btn"><i class="fas fa-plus"></i></button>
+                </div>
+                <table id="trainers-list">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Surname</th>
+                            <th>Address</th>
+                            <th>Phone</th>
+                            <th>Email</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Rows will be dynamically loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        
+            <div id="programs" class="tab-content" style="display:none;">
+                <div class="gym-info-mng-title-cont">
+                    <h3>Programs</h3>
+                    <button id="add-programme-btn"><i class="fas fa-plus"></i></button>
+                </div>
+                <table id="programme-list">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                            <th>Goal</th>
+                            <th>Difficulty</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Rows will be dynamically loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        
+            <div id="schedule" class="tab-content" style="display:none;">
+                <div class="gym-info-mng-title-cont">
+                    <h3>Time Schedule</h3>
+                    <button id="add-schedule-btn"><i class="fas fa-plus"></i></button>
+                </div>
+                <table id="schedule-list">
+                    <thead>
+                        <tr>
+                            <th>Title<th>
+                            <th>Day</th>
+                            <th>Hour</th>
+                            <th>Trainer</th>
+                            <th>Maximum Capacity</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Rows will be dynamically loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div style="min-height: 25px"></div>
+
+
+    </div>
+
+    <!-------------------- 1st section -------------------------->
+
+    <!-- Popup for account approval -->
+    <div class="overlay" id="overlay"></div>
+    <div class="popup" id="account-popup">
+        <h3>Account Approval</h3>
+        <div id="account-info">
+            <!-- Account info will be populated here -->
+        </div>
+        <div class="popup-buttons">
+            <button class="approve" id="approve-button">Approve</button>
+            <button class="reject" id="reject-button">Reject</button>
+            <button class="cancel" id="cancel-approval">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Popup for role selection -->
+    <div class="role-popup" id="role-popup">
+        <h3>Select Role</h3>
+        <p>Do you want to set this user as:</p>
+        <button class="confirm-btn" id="set-user">User</button>
+        <button class="confirm-btn" id="set-admin">Admin</button>
+        <button class="cancel-btn" id="cancel-role">Cancel</button>
+    </div>
+
+    <!-------------------- 2nd section -------------------------->
+    <!-- Popup for editing user information -->
+    <!-- Popup for creating a new account -->
+
+    <div class="overlay" id="create-account-overlay"></div>
+    <div class="edit-popup" id="create-account-popup">
+        <h3>Create New User</h3>
+        <form id="create-account-form">
+            <label for="name">Name:</label>
+            <input type="text" id="create-account-name" name="name">
+            <label for="surname">Surname:</label>
+            <input type="text" id="create-account-surname" name="surname">
+            <label for="country">Country:</label>
+            <select id="create-account-country" name="country">
+                <option value="">Select Country</option>
+            </select>
+            <label for="city">City:</label>
+            <select id="create-account-city" name="city"> </select>
+            <label for="address">Address:</label>
+            <input type="text" id="create-account-address" name="address">
+            <label for="email">Email:</label>
+            <input type="email" id="create-account-email" name="email">
+            <label for="phone">Phone:</label>
+            <input type="text" id="create-account-phone" name="phone">
+            <label for="role">Role:</label>
+            <select id="create-account-role" name="role">
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+            </select>
+            <label for="password">Password:</label>
+            <input type="password" id="create-account-password" name="password">
+
+            <div class="popup-buttons">
+                <button type="button" class="save-btn" id="save-add-user-button">Create</button>
+                <button type="button" class="cancel-btn" id="cancel-add-user-button">Cancel</button>
+
+            </div>
+        </form>
+    </div>
+
+    <div class="overlay" id="edit-overlay"></div>
+        <div class="edit-popup" id="edit-popup">
+            <h3>Edit User Information</h3>
+            <form id="edit-user-form">
+                <label for="edit-username">Username:</label>
+                <input type="text" id="edit-username" name="username" readonly>
+
+                <label for="edit-name">Name:</label>
+                <input type="text" id="edit-name" name="name">
+
+                <label for="edit-surname">Surname:</label>
+                <input type="text" id="edit-surname" name="surname">
+
+                <label for="edit-country">Country:</label>
+                <select id="edit-country" name="country"> </select>
+
+                <label for="edit-city">City:</label>
+                <select name="city" id="edit-city"> </select>
+
+                <label for="edit-address">Address:</label>
+                <input type="text" id="edit-address" name="address">
+
+                <label for="edit-email">Email:</label>
+                <input type="email" id="edit-email" name="email">
+
+                <label for="edit-phone">Phone:</label>
+                <input type="text" id="edit-phone" name="phone">
+
+                <label for="edit-role">Role:</label>
+                <select id="edit-role" name="role">
+                    <option value="user">User</option>
+                    <option value="admin">Admin</option>
+                </select>
+
+                <div class="popup-buttons">
+                    <button type="button" class="save-btn" id="save-edit-button">Save</button>
+                    <button type="button" class="cancel-btn" id="cancel-edit-button">Cancel</button>
+                </div>
+            </form>
+        </div>
+
+    <!-------------------- 3rd section -------------------------->
+    <!-- Popup for editing trainer information -->
+        <!-- Popup for editing trainer information -->
+        <div class="overlay" id="edit-trainer-overlay"></div>
+        <div class="edit-popup" id="edit-trainer-popup">
+            <h3>Edit Trainer Information</h3>
+            <form id="edit-trainer-form">
+                <label for="edit-trainer-id">ID:</label>
+                <input type="text" id="edit-trainer-id" name="id" readonly>
+
+                <label for="edit-trainer-name">Name:</label>
+                <input type="text" id="edit-trainer-name" name="name">
+    
+                <label for="edit-trainer-surname">Surname:</label>
+                <input type="text" id="edit-trainer-surname" name="surname">
+    
+                <label for="edit-trainer-address">Address:</label>
+                <input type="text" id="edit-trainer-address" name="address">
+    
+                <label for="edit-trainer-phone">Phone:</label>
+                <input type="text" id="edit-trainer-phone" name="phone">
+    
+                <label for="edit-trainer-email">Email:</label>
+                <input type="email" id="edit-trainer-email" name="email">
+    
+                <div class="popup-buttons">
+                    <button type="button" class="save-btn" id="save-trainer-button">Save</button>
+                    <button type="button" class="cancel-btn" id="cancel-trainer-button">Cancel</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Popup for editing program information -->
+        <div class="overlay" id="edit-program-overlay"></div>
+        <div class="edit-popup" id="edit-program-popup">
+            <h3>Edit Program Information</h3>
+            <form id="edit-program-form">
+                <label for="edit-program-id">ID:</label>
+                <input type="text" id="edit-program-id" name="id" readonly>
+
+                <label for="edit-program-title">Title:</label>
+                <input type="text" id="edit-program-title" name="title">
+    
+                <label for="edit-program-type">Type:</label>
+                <input type="text" id="edit-program-type" name="type">
+    
+                <label for="edit-program-description">Description:</label>
+                <input type="text" id="edit-program-description" name="description">
+    
+                <label for="edit-program-goal">Goal:</label>
+                <input type="text" id="edit-program-goal" name="goal">
+    
+                <label for="edit-program-difficulty">Difficulty:</label>
+                <input type="text" id="edit-program-difficulty" name="difficulty">
+    
+                <div class="popup-buttons">
+                    <button type="button" class="save-btn" id="save-program-button">Save</button>
+                    <button type="button" class="cancel-btn" id="cancel-program-button">Cancel</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Popup for editing schedule information -->
+        <div class="overlay" id="edit-schedule-overlay"></div>
+        <div class="edit-popup" id="edit-schedule-popup">
+            <h3>Edit Schedule Information</h3>
+            <form id="edit-schedule-form">
+                <label for="edit-schedule-id">ID:</label>
+                <input type="text" id="edit-schedule-id" name="id" readonly>
+
+                <label for="edit-schedule-title">Title:</label>
+                <select id="edit-schedule-title" name="title">
+                </select>
+
+                <label for="edit-schedule-day">Day:</label>
+                <input type="date" id="edit-schedule-day" name="day">
+    
+                <label for="edit-schedule-hour">Hour:</label>
+                <input type="time" id="edit-schedule-hour" name="hour">
+    
+                <label for="edit-schedule-trainer">Trainer:</label>
+                <select id="edit-schedule-trainer" name="trainer">
+                </select>
+    
+                <label for="edit-schedule-capacity">Maximum Capacity:</label>
+                <input type="text" id="edit-schedule-capacity" name="capacity">
+    
+                <div class="popup-buttons">
+                    <button type="button" class="save-btn" id="save-schedule-button">Save</button>
+                    <button type="button" class="cancel-btn" id="cancel-schedule-button">Cancel</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Popup for creating new trainer-->
+        <div class="overlay" id="add-trainer-overlay"></div>
+        <div class="edit-popup" id="add-trainer-popup">
+            <h3>Add New Trainer</h3>
+            <form id="add-trainer-form">
+                <label for="add-trainer-name">Name:</label>
+                <input type="text" id="add-trainer-name" name="name">
+    
+                <label for="add-trainer-surname">Surname:</label>
+                <input type="text" id="add-trainer-surname" name="surname">
+    
+                <label for="add-trainer-address">Address:</label>
+                <input type="text" id="add-trainer-address" name="address">
+    
+                <label for="add-trainer-phone">Phone:</label>
+                <input type="text" id="add-trainer-phone" name="phone">
+    
+                <label for="add-trainer-email">Email:</label>
+                <input type="email" id="add-trainer-email" name="email">
+    
+                <div class="popup-buttons">
+                    <button type="button" class="save-btn" id="save-add-trainer-button">Save</button>
+                    <button type="button" class="cancel-btn" id="cancel-add-trainer-button">Cancel</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Popup for creating new programme -->
+        <div class="overlay" id="add-programme-overlay"></div>
+        <div class="edit-popup" id="add-programme-popup">
+            <h3>Add New Programme</h3>
+            <form id="add-programme-form">
+                <label for="add-programme-title">Title:</label>
+                <input type="text" id="add-programme-title" name="title">
+    
+                <label for="add-programme-type">Type:</label>
+                <input type="text" id="add-programme-type" name="type">
+    
+                <label for="add-programme-description">Description:</label>
+                <input type="text" id="add-programme-description" name="description">
+    
+                <label for="add-programme-goal">Goal:</label>
+                <input type="text" id="add-programme-goal" name="goal">
+    
+                <label for="add-programme-difficulty">Difficulty:</label>
+                <input type="text" id="add-programme-difficulty" name="difficulty">
+    
+                <div class="popup-buttons">
+                    <button type="button" class="save-btn" id="save-add-programme-button">Save</button>
+                    <button type="button" class="cancel-btn" id="cancel-add-programme-button">Cancel</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Popup for creating new programme schedule -->
+        <div class="overlay" id="add-schedule-overlay"></div>
+        <div class="edit-popup" id="add-schedule-popup">
+            <h3>Add New Schedule</h3>
+            <form id="add-schedule-form">
+
+                <label for="add-schedule-title">Programme Title:</label>
+                <select id="add-schedule-title" name="title">
+                </select>
+
+                <label for="add-schedule-day">Day:</label>
+                <input type="date" id="add-schedule-day" name="day">
+    
+                <label for="add-schedule-hour">Hour:</label>
+                <input type="time" id="add-schedule-hour" name="hour">
+    
+                <label for="add-schedule-trainer">Trainer:</label>
+                <select id="add-schedule-trainer" name="trainer">
+                </select>
+    
+                <label for="add-schedule-capacity">Maximum Capacity:</label>
+                <input type="text" id="add-schedule-capacity" name="capacity">
+    
+                <div class="popup-buttons">
+                    <button type="button" class="save-btn" id="save-add-schedule-button">Save</button>
+                    <button type="button" class="cancel-btn" id="cancel-add-schedule-button">Cancel</button>
+                </div>
+            </form>
+        </div>
+
+
+
+
+
+    <script>
+        function openTab(evt, tabName) {
+                // if name equals to trainers hide the other 2
+                // if name equals to programmes hide the other 2
+                // if name equals to schedule hide the other 2
+
+                // Get all elements with class="tab-content" and hide them
+                document.querySelectorAll(".tab-content").forEach(tabContent => {
+                    tabContent.style.display = "none";
+                });
+
+                // Get all elements with class="tab-link" and remove the class "active"
+                document.querySelectorAll(".tab-link").forEach(tabLink => {
+                    tabLink.classList.remove("active");
+                });
+
+                // Show the current tab, and add an "active" class to the button that opened the tab
+                document.getElementById(tabName).style.display = "block";
+                evt.currentTarget.classList.add("active");
+
+            }
+
+        let newAccounts = [];
+        let users = [];
+        let trainers = [];
+        let programs = [];
+        let schedule = [];
+        let countriesCities = {};
+        let populateCountries = function(id) {
+                try{
+                // API endpoint
+                    const url = "https://countriesnow.space/api/v0.1/countries";
+
+                    fetch(url)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! Status: ${response.status}`);
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+
+
+                            // Loop through the data and populate the object
+                            data.data.forEach(country => {
+                                countriesCities[country.country] = country.cities;
+                                // add country to the select element
+                                const option = document.createElement("option");
+                                option.value = country.country;
+                                option.text = country.country;
+                                document.getElementById(id).appendChild(option);
+
+                            });
+
+
+                        })
+                        .catch(error => {
+                            console.error('Error fetching data:', error);
+                        });
+
+                } catch (error){
+                    console.error(error);
+                }
+            };
+
+        let populateCities = function(id) {
+            console.log(id);
+            if (id=="edit-city") {
+                // loop through countriesCities
+                const country = document.getElementById("edit-country").value;
+                console.log(country);
+                const cities = countriesCities[country];
+                console.log(cities);
+                for (const city_index in cities) {
+                    // create a new option and add it to edit-country
+                    const option = document.createElement("option");
+                    option.value = cities[city_index];
+                    option.text = cities[city_index];
+                    document.getElementById("edit-city").appendChild(option);
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('expand-new-accounts-container').addEventListener('click', function() {
+                const newAccountsContainer = document.querySelector('.new-accounts-container');
+                if (newAccountsContainer.style.height === '55px') {
+                    newAccountsContainer.style.minHeight = '60vh';
+                    newAccountsContainer.style.height = '60vh';
+                    newAccountsContainer.style.overflow = 'auto'
+                    this.classList.remove('fa-plus');
+                    this.classList.add('fa-minus');
+                } else {
+                    newAccountsContainer.style.height = '55px';
+                    newAccountsContainer.style.minHeight = '55px';
+                    newAccountsContainer.style.overflow = 'hidden';
+                    this.classList.remove('fa-minus');
+                    this.classList.add('fa-plus');
+                }
+            });
+            // add click event to expand-user-management-container setting the height of the container to 55px
+            document.getElementById('expand-user-management-container').addEventListener('click', function() {
+                const userManagementContainer = document.querySelector('.user-management');
+                if (userManagementContainer.style.height === '55px') {
+                    userManagementContainer.style.minHeight = '60vh';
+                    userManagementContainer.style.height = '60vh';
+                    userManagementContainer.style.overflow = 'auto'
+                    this.classList.remove('fa-plus');
+                    this.classList.add('fa-minus');
+                } else {
+                    userManagementContainer.style.height = '55px';
+                    userManagementContainer.style.minHeight = '55px';
+                    userManagementContainer.style.overflow = 'hidden';
+                    this.classList.remove('fa-minus');
+                    this.classList.add('fa-plus');
+                }
+            });
+            // add click event to expand-gym-info-management-container setting the height of the container to 55px
+            document.getElementById('expand-gym-info-management-container').addEventListener('click', function() {
+                const gymInfoManagementContainer = document.querySelector('.gym-info-management');
+                if (gymInfoManagementContainer.style.height === '55px') {
+                    gymInfoManagementContainer.style.minHeight = '60vh';
+                    gymInfoManagementContainer.style.height = '60vh';
+                    gymInfoManagementContainer.style.overflow = 'auto'
+                    this.classList.remove('fa-plus');
+                    this.classList.add('fa-minus');
+                } else {
+                    gymInfoManagementContainer.style.height = '55px';
+                    gymInfoManagementContainer.style.minHeight = '55px';
+                    gymInfoManagementContainer.style.overflow = 'hidden';
+                    this.classList.remove('fa-minus');
+                    this.classList.add('fa-plus');
+                }
+            });
+
+
+            // ITEMS FOR ACCEPTING OR REJECTING A NEW ACCOUNT
+
+            // Function to open the account approval popup
+            function openPopup(username) {
+                document.getElementById('account-info').textContent = 'Account username: ' + username;
+
+
+                document.getElementById('overlay').style.display = 'block';
+                document.getElementById('account-popup').style.display = 'block';
+                document.querySelector('#approve-button').dataset.username = username;
+                document.querySelector('#reject-button').dataset.username = username;
+            }
+            function closePopup() {
+                document.getElementById('overlay').style.display = 'none';
+                document.getElementById('account-popup').style.display = 'none';
+                document.getElementById('role-popup').style.display = 'none';
+            }
+            document.getElementById('approve-button').addEventListener('click', function() {
+                const username = this.dataset.username;
+                document.getElementById('account-popup').style.display = 'none';
+                document.getElementById('overlay').style.display = 'block';
+                document.getElementById('role-popup').style.display = 'block';
+                document.querySelector('#role-popup').dataset.username = username;
+            });
+            document.getElementById('reject-button').addEventListener('click', function() {
+                const username = this.dataset.username;
+                console.log(username);
+                setRole(username, 'rejected');
+            });
+            document.getElementById('cancel-approval').addEventListener('click', function() {
+                document.getElementById('overlay').style.display = 'none';
+                document.getElementById('account-popup').style.display = 'none';
+            });
+            document.getElementById('cancel-role').addEventListener('click', function() {
+                document.getElementById('overlay').style.display = 'none';
+                document.getElementById('role-popup').style.display = 'none';
+                document.getElementById('account-popup').style.display = 'block';
+            });
+            document.getElementById('set-user').addEventListener('click', function() {
+                const username = document.querySelector('#role-popup').dataset.username;
+                setRole(username, 'user');
+            });
+            document.getElementById('set-admin').addEventListener('click', function() {
+                const username = document.querySelector('#role-popup').dataset.username;
+                setRole(username, 'admin');
+            });
+            function setRole(username, role) {
+                fetch(`/admin/change-account-role`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ "username": username, "role": role })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert(`Account set as ${role} successfully`);
+                    closePopup();
+                    location.reload();
+                })
+                .catch(error => {
+                    alert("Error setting role:", error);
+                });
+            }
+
+            // END OF ITEMS FOR ACCEPTING OR REJECTING A NEW ACCOUNT
+
+
+            fetch("/admin/fetch-dashboard-data", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Data fetched:", data);
+                newAccounts = data.newAccounts;
+                users = data.accounts;
+                trainers = data.trainers;
+                programs = data.programmes;
+                schedule = data.programmeSchedule;
+
+                // Populate the new accounts table
+                const tableBody = document.querySelector("#accounts-table tbody");
+                newAccounts.forEach(account => {
+                    const row = document.createElement("tr");
+
+                    row.innerHTML = `
+                        <td>${account.username}</td>
+                        <td>${account.name}</td>
+                        <td>${account.surname}</td>
+                        <td>${account.country}</td>
+                        <td>${account.city}</td>
+                        <td>${account.address}</td>
+                        <td>${account.email}</td>
+                        <td>${account.phone}</td>
+                        <td>
+                            <button class="change-role-btn" data-username="${account.username}">Change Status</button>
+                        </td>
+                    `;
+
+                    tableBody.appendChild(row);
+                });
+                document.getElementById("new-accounts-container-title").textContent = `Pending Account Approvals (${newAccounts.length})`;
+                // Add event listeners for accept and reject buttons
+                document.querySelectorAll(".change-role-btn").forEach(button => {
+                    button.addEventListener("click", function() {
+                        const username = this.dataset.username;
+                        openPopup(username);
+                    });
+                });
+
+
+                // Populate the user management table
+                const userTable = document.getElementById("user-management-list");
+                const table = document.createElement("table");
+                table.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Name</th>
+                            <th>Surname</th>
+                            <th>Country</th>
+                            <th>City</th>
+                            <th>Address</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Role</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    ${users.map(user => `
+                        <tr>
+                            <td>${user.username}</td>
+                            <td>${user.name}</td>
+                            <td>${user.surname}</td>
+                            <td>${user.country}</td>
+                            <td>${user.city}</td>
+                            <td>${user.address}</td>
+                            <td>${user.email}</td>
+                            <td>${user.phone}</td>
+                            <td>${user.role}</td>
+                            <td>
+                                <button class="edit-btn" data-user="${user}">Change Info</button>
+                                <button class="delete-btn" id="delete-user-btn" data-user="${user}"><i class="fa fa-trash trash-icon" style="font-size:150%;color:red; border: none"></i></button>
+                            </td>
+                        </tr>
+                    `).join('')}
+                    </tbody>
+                `;
+                userTable.appendChild(table);
+                document.getElementById('add-user-btn').addEventListener('click', function() {
+                    document.getElementById('create-account-overlay').style.display = 'block';
+                    document.getElementById('create-account-popup').style.display = 'block';
+
+                    populateCountries("create-account-country");
+
+                });
+                // Handle country change event
+                document.getElementById("create-account-country").addEventListener("change", function() {
+                        const country = this.value;
+                        const cities = countriesCities[country];
+
+                        // Clear the cities dropdown
+                        document.getElementById("create-account-city").innerHTML = "";
+
+                        // Add cities to the dropdown
+                        cities.forEach(city => {
+                            const option = document.createElement("option");
+                            option.value = city;
+                            option.text = city;
+                            document.getElementById("create-account-city").appendChild(option);
+                        });
+                });
+                document.getElementById('cancel-add-user-button').addEventListener('click', function() {
+                    document.getElementById('create-account-overlay').style.display = 'none';
+                    document.getElementById('create-account-popup').style.display = 'none';
+                });
+                document.getElementById("edit-country").addEventListener("change", function(){
+                    const country = this.value;
+                    const cities = countriesCities[country];
+
+                    console.log("values:",country,cities);
+
+                    document.getElementById("edit-city").innerHTML = "";
+                    // Add cities to the dropdown
+                    cities.forEach(city => {
+                            const option = document.createElement("option");
+                            option.value = city;
+                            option.text = city;
+                            document.getElementById("edit-city").appendChild(option);
+                        });
+                })
+                document.getElementById("user-management-container-title").textContent = `User Management - Total Users: ${users.length}`;
+                document.querySelectorAll(".edit-btn").forEach(button => {
+                    button.addEventListener("click", function() {
+                        populateCountries("edit-country");
+                        // get the row of the table the button belongs to and then extract all information of each column on this.dataset
+                        const row = this.closest("tr");
+                        const username = row.querySelector("td:nth-child(1)").textContent;
+                        const name = row.querySelector("td:nth-child(2)").textContent;
+                        const surname = row.querySelector("td:nth-child(3)").textContent;
+                        const country = row.querySelector("td:nth-child(4)").textContent;
+                        const city = row.querySelector("td:nth-child(5)").textContent;
+                        const address = row.querySelector("td:nth-child(6)").textContent;
+                        const email = row.querySelector("td:nth-child(7)").textContent;
+                        const phone = row.querySelector("td:nth-child(8)").textContent;
+                        const role = row.querySelector("td:nth-child(9)").textContent;
+                        
+                        document.getElementById("edit-username").value = username;
+                        document.getElementById("edit-name").value = name;
+                        document.getElementById("edit-surname").value = surname;
+                        document.getElementById("edit-country").value = country;
+                        //document.getElementById("edit-address").value = address;
+                        document.getElementById("edit-email").value = email;
+                        document.getElementById("edit-phone").value = phone;
+                        document.getElementById("edit-role").value = role;
+                        document.getElementById("edit-overlay").style.display = 'block';
+                        document.getElementById("edit-popup").style.display = 'block';
+
+                        populateCities("edit-city");
+
+//                            populateCountries("edit-country");
+                            //print all options of country select
+
+                            // set option to country
+//                            document.getElementById("edit-country").value = country;
+                            
+                            // console.log everything
+  //                          console.log(username, name, surname, country, city, address, email, phone, role);
+                            //openEditPopup(username, name, surname, country, city, address, email, phone, role);
+                            
+    //                        console.log(">>",document.getElementById("edit-country").value);
+                            //populateCities("edit-city");
+
+
+                            //const username = this.dataset.username;
+                            //openEditPopup(username);
+                        });
+
+                })
+
+
+                // populate trainers list
+                const trainersList = document.getElementById("trainers-list");
+                trainersList.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Surname</th>
+                            <th>Address</th>
+                            <th>Phone</th>
+                            <th>Email</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    ${trainers.map(trainer => `
+                        <tr>
+                            <td>${trainer.id}</td>
+                            <td>${trainer.name}</td>
+                            <td>${trainer.surname}</td>
+                            <td>${trainer.address}</td>
+                            <td>${trainer.phone}</td>
+                            <td>${trainer.email}</td>
+                            <td>
+                                <button class="edit-trainer-btn" data-trainer="${trainer}">Change Info</button>
+                                <button class="delete-btn" id="delete-trainer-btn" data-trainer="${trainer}"><i class="fa fa-trash trash-icon" style="font-size:150%;color:red; border: none"></i></button>
+                            </td>
+                        </tr>
+                    `).join('')}
+                    </tbody>
+                `;
+                // change title for trainers
+                document.getElementById("trainers").querySelector("h3").textContent = `Trainers (${trainers.length})`;
+                // Add event listener for add trainer button to open create popup
+                document.getElementById("add-trainer-btn").addEventListener("click", function() {
+                    document.getElementById("add-trainer-overlay").style.display = 'block';
+                    document.getElementById("add-trainer-popup").style.display = 'block';
+                });
+                // Add event listeners for create trainer save and cancel buttons
+                document.getElementById("cancel-add-trainer-button").addEventListener("click", function() {
+                    document.getElementById("add-trainer-overlay").style.display = 'none';
+                    document.getElementById("add-trainer-popup").style.display = 'none';
+                });
+                document.querySelectorAll(".edit-trainer-btn").forEach(button => {
+                    button.addEventListener("click", function() {
+                            // get the row of the table the button belongs to and then extract all information of each column on this.dataset
+                            const row = this.closest("tr");
+                            const id = row.querySelector("td:nth-child(1)").textContent;
+                            const name = row.querySelector("td:nth-child(2)").textContent;
+                            const surname = row.querySelector("td:nth-child(3)").textContent;
+                            const address = row.querySelector("td:nth-child(4)").textContent;
+                            const phone = row.querySelector("td:nth-child(5)").textContent;
+                            const email = row.querySelector("td:nth-child(6)").textContent;
+
+
+                            openEditTrainerPopup(id, name, surname, address, phone, email);
+
+
+                            //const username = this.dataset.username;
+                            //openEditPopup(username);
+                    });
+
+                });
+
+
+
+                // populate programs list
+                const programsList = document.getElementById("programme-list");
+                programsList.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                            <th>Goal</th>
+                            <th>Difficulty</th>
+                            <th> Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    ${programs.map(program => `
+                        <tr>
+                            <td>${program.id}</td>
+                            <td>${program.title}</td>
+                            <td>${program.type}</td>
+                            <td>${program.description}</td>
+                            <td>${program.goal}</td>
+                            <td>${program.difficulty}</td>
+                            <td>
+                                <button class="edit-program-btn" data-programm="${program}">Change Info</button>
+                                <button class="delete-btn" id="delete-program-btn" data-programm="${program}"><i class="fa fa-trash trash-icon" style="font-size:150%;color:red; border: none"></i></button>
+                            </td>
+                        </tr>
+                    `).join('')}
+                    </tbody>
+                `;
+                // change title for program
+                document.getElementById("programs").querySelector("h3").textContent = `Programs (${programs.length})`;
+                document.getElementById("add-programme-btn").addEventListener("click", function() {
+                    document.getElementById("add-programme-overlay").style.display = 'block';
+                    document.getElementById("add-programme-popup").style.display = 'block';
+                });
+                // Add event listener for add programme button to open create popup
+                document.getElementById("save-add-programme-button").addEventListener("click", function() {
+                    document.getElementById("add-programme-overlay").style.display = 'block';
+                    document.getElementById("add-programme-popup").style.display = 'block';
+                });
+                // Add event listeners for create programme save and cancel buttons
+                document.getElementById("cancel-add-programme-button").addEventListener("click", function() {
+                    document.getElementById("add-programme-overlay").style.display = 'none';
+                    document.getElementById("add-programme-popup").style.display = 'none';
+                });
+                document.querySelectorAll(".edit-program-btn").forEach(button => {
+                    button.addEventListener("click", function() {
+                            // get the row of the table the button belongs to and then extract all information of each column on this.dataset
+                            const row = this.closest("tr");
+                            const id = row.querySelector("td:nth-child(1)").textContent;
+                            const title = row.querySelector("td:nth-child(2)").textContent;
+                            const type = row.querySelector("td:nth-child(3)").textContent;
+                            const description = row.querySelector("td:nth-child(4)").textContent;
+                            const goal = row.querySelector("td:nth-child(5)").textContent;
+                            const difficulty = row.querySelector("td:nth-child(6)").textContent;
+
+                            openEditProgramPopup(id, title, type, description, goal, difficulty);
+
+                    });
+                });
+
+
+
+                // populate schedule list
+                const scheduleList = document.getElementById("schedule-list");
+                scheduleList.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>Day</th>
+                            <th>Hour</th>
+                            <th>Trainer</th>
+                            <th>Maximum Capacity</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    ${schedule.map(schedule => `
+                        <tr>
+                            <td>${schedule.id}</td>
+                            <td>${schedule.title}</td>
+                            <td>${schedule.day}</td>
+                            <td>${schedule.hour}</td>
+                            <td>${schedule.trainer}</td>
+                            <td>${schedule.capacity}</td>
+                            <td>
+                                <button class="edit-schedule-btn" data-schedule="${schedule}" >Change Info</button>
+                                <button class="delete-btn" id="delete-schedule-btn" data-schedule="${schedule}"><i class="fa fa-trash trash-icon" style="font-size:150%;color:red; border: none"></i></button>
+                            </td>
+                        </tr>
+                    `).join('')}
+                    </tbody>
+                `;
+                document.getElementById("schedule").querySelector("h3").textContent = `Time Schedule (${schedule.length})`;
+                // actions for adding a new schedule
+                document.getElementById("add-schedule-btn").addEventListener("click", function() {
+                    document.getElementById("add-schedule-overlay").style.display = 'block';
+                    document.getElementById("add-schedule-popup").style.display = 'block';
+
+                    // populate trainers and programmes dropdowns from variables
+                    const addScheduleTitle = document.getElementById("add-schedule-title");
+                    const addScheduleTrainer = document.getElementById("add-schedule-trainer");
+
+                    programs.forEach(program => {
+                        const option = document.createElement("option");
+                        option.value = program.title;
+                        option.textContent = program.title;
+                        addScheduleTitle.appendChild(option);
+                    });
+
+                    trainers.forEach(trainer => {
+                        const option = document.createElement("option");
+                        option.value = trainer.name + " " + trainer.surname;
+                        option.textContent = trainer.name + " " + trainer.surname;
+                        addScheduleTrainer.appendChild(option);
+                    });
+                });
+                // Add event listeners for create schedule save and cancel buttons
+                document.getElementById("cancel-add-schedule-button").addEventListener("click", function() {
+                    document.getElementById("add-schedule-overlay").style.display = 'none';
+                    document.getElementById("add-schedule-popup").style.display = 'none';
+                });
+                document.querySelectorAll(".edit-schedule-btn").forEach(button => {
+                    button.addEventListener("click", function() {
+                            // get the row of the table the button belongs to and then extract all information of each column on this.dataset
+                            const row = this.closest("tr");
+                            const id = row.querySelector("td:nth-child(1)").textContent;
+                            const title = row.querySelector("td:nth-child(2)").textContent;
+                            const day = row.querySelector("td:nth-child(3)").textContent;
+                            const hour = row.querySelector("td:nth-child(4)").textContent;
+                            const trainer = row.querySelector("td:nth-child(5)").textContent;
+                            const capacity = row.querySelector("td:nth-child(6)").textContent;
+
+                            openEditSchedulePopup(id, title, day, hour, trainer, capacity);
+
+
+                    });
+                });
+
+
+
+
+
+                /* EVENT LISTENERS FOR SAVING POPUP DATA */
+
+                // Event listener for creating new user
+                document.getElementById('save-add-user-button').addEventListener('click', function() {
+                        const name = document.getElementById('create-account-name').value;
+                        const surname = document.getElementById('create-account-surname').value;
+                        const country = document.getElementById('create-account-country').value;
+                        const city = document.getElementById('create-account-city').value;
+                        const address = document.getElementById('create-account-address').value;
+                        const email = document.getElementById('create-account-email').value;
+                        const phone = document.getElementById('create-account-phone').value;
+                        const role = document.getElementById('create-account-role').value;
+                        const password = document.getElementById('create-account-password').value;
+
+                        console.log("create user:", name, surname, country, city, address, email, phone, role, password);
+
+                        // check if country and city have values
+                        if (country === "" || city === "") {
+                            alert("Please select a country and city");
+                            return;
+                        }
+
+
+                        fetch("/admin/create-user", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({ name, surname, country, city, address, email, phone, role, password })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log("User added:", data);
+                            document.getElementById('create-account-overlay').style.display = 'none';
+                            document.getElementById('create-account-popup').style.display = 'none';
+                            location.reload(); // Refresh the page to see the updates
+                        })
+                        .catch(error => {
+                            console.error("Error adding user:", error);
+                        });
+                });
+
+                //Event Listener for creating new trainer
+                document.getElementById("save-add-trainer-button").addEventListener("click", function() {
+                        const name = document.getElementById("add-trainer-name").value;
+                        const surname = document.getElementById("add-trainer-surname").value;
+                        const address = document.getElementById("add-trainer-address").value;
+                        const phone = document.getElementById("add-trainer-phone").value;
+                        const email = document.getElementById("add-trainer-email").value;
+
+                        fetch("/admin/create-trainer", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({ name, surname, address, phone, email })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log("Trainer added:", data);
+                            document.getElementById("add-trainer-overlay").style.display = 'none';
+                            document.getElementById("add-trainer-popup").style.display = 'none';
+                            location.reload(); // Refresh the page to see the updates
+                        })
+                        .catch(error => {
+                            console.error("Error adding trainer:", error);
+                        });
+                });
+
+                // Event listener for creating new programme
+                document.getElementById("save-add-programme-button").addEventListener("click", function() {
+                        const title = document.getElementById("add-programme-title").value;
+                        const type = document.getElementById("add-programme-type").value;
+                        const description = document.getElementById("add-programme-description").value;
+                        const goal = document.getElementById("add-programme-goal").value;
+                        const difficulty = document.getElementById("add-programme-difficulty").value;
+
+                        fetch("/admin/create-programme", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({ title, type, description, goal, difficulty })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log("Programme added:", data);
+                            document.getElementById("add-programme-overlay").style.display = 'none';
+                            document.getElementById("add-programme-popup").style.display = 'none';
+                            location.reload(); // Refresh the page to see the updates
+                        })
+                        .catch(error => {
+                            console.error("Error adding programme:", error);
+                        });
+                });
+
+                // Event listener for creating new schedule
+                document.getElementById("save-add-schedule-button").addEventListener("click", function() {
+                        const title = document.getElementById("add-schedule-title").value;
+                        const day = document.getElementById("add-schedule-day").value;
+                        const hour = document.getElementById("add-schedule-hour").value;
+                        const trainer = document.getElementById("add-schedule-trainer").value;
+                        const capacity = document.getElementById("add-schedule-capacity").value;
+
+                        fetch("/admin/create-programme-schedule", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({ title, day, hour, trainer, capacity })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log("Schedule added:", data);
+                            document.getElementById("add-schedule-overlay").style.display = 'none';
+                            document.getElementById("add-schedule-popup").style.display = 'none';
+                            location.reload(); // Refresh the page to see the updates
+                        })
+                        .catch(error => {
+                            console.error("Error adding schedule:", error);
+                        });
+                });
+
+                // END OF EVENT LISTENERS FOR SAVING POPUP DATA
+
+
+
+                // EVENT LISTENERS FOR UPDATING DATA
+
+                // Event listener for editing user info
+                document.getElementById("save-edit-button").addEventListener("click", function () {
+                    const username = document.getElementById("edit-username").value;
+                    const name = document.getElementById("edit-name").value;
+                    const surname = document.getElementById("edit-surname").value;
+                    const country = document.getElementById("edit-country").value;
+                    const city = document.getElementById("edit-city").value;
+                    const address = document.getElementById("edit-address").value;
+                    const email = document.getElementById("edit-email").value;
+                    const phone = document.getElementById("edit-phone").value;
+                    const role = document.getElementById("edit-role").value;
+
+                    fetch("/admin/update-user-info", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            "username":username, "name":name, "surname":surname, "country":country, "city": city, "address": address, "email": email, "phone": phone, "role": role
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log("User updated:", data);
+                        closeEditPopup();
+                        location.reload();
+                    })
+                    .catch(error => {
+                        console.error("Error updating user:", error);
+                    });
+                });
+
+                // Event listener for editing trainer info
+                document.getElementById("save-trainer-button").addEventListener("click", function() {
+                    const id = document.getElementById("edit-trainer-id").value;
+                    const name = document.getElementById("edit-trainer-name").value;
+                    const surname = document.getElementById("edit-trainer-surname").value;
+                    const address = document.getElementById("edit-trainer-address").value;
+                    const phone = document.getElementById("edit-trainer-phone").value;
+                    const email = document.getElementById("edit-trainer-email").value;
+
+                    console.log(id, name, surname, address, phone, email);
+
+                    fetch("/admin/update-trainer-info", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ id, name, surname, address, phone, email })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log("Trainer updated:", data);
+                        document.getElementById("edit-trainer-overlay").style.display = 'none';
+                        document.getElementById("edit-trainer-popup").style.display = 'none';
+                        location.reload(); // Refresh the page to see the updates
+                    })
+                    .catch(error => {
+                        console.error("Error updating trainer:", error);
+                    });
+                });
+
+                // Event listener for editing program info
+                document.getElementById("save-program-button").addEventListener("click", function() {
+                    const id = document.getElementById("edit-program-id").value;
+                    const title = document.getElementById("edit-program-title").value;
+                    const type = document.getElementById("edit-program-type").value;
+                    const description = document.getElementById("edit-program-description").value;
+                    const goal = document.getElementById("edit-program-goal").value;
+                    const difficulty = document.getElementById("edit-program-difficulty").value;
+
+                    fetch("/admin/update-programme-info", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ id, title, type, description, goal, difficulty })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log("Program updated:", data);
+                        document.getElementById("edit-program-overlay").style.display = 'none';
+                        document.getElementById("edit-program-popup").style.display = 'none';
+                        location.reload(); // Refresh the page to see the updates
+                    })
+                    .catch(error => {
+                        console.error("Error updating program:", error);
+                    });
+                });
+
+                // Event listener for editing schedule info
+                document.getElementById("save-schedule-button").addEventListener("click", function() {
+                    const id = document.getElementById("edit-schedule-id").value;
+                    const title = document.getElementById("edit-schedule-title").value;
+                    const day = document.getElementById("edit-schedule-day").value;
+                    const hour = document.getElementById("edit-schedule-hour").value;
+                    const trainer = document.getElementById("edit-schedule-trainer").value;
+                    const capacity = document.getElementById("edit-schedule-capacity").value;
+
+                    fetch("/admin/update-programme-schedule", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ id, title, day, hour, trainer, capacity })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log("Schedule updated:", data);
+                        document.getElementById("edit-schedule-overlay").style.display = 'none';
+                        document.getElementById("edit-schedule-popup").style.display = 'none';
+                        location.reload(); // Refresh the page to see the updates
+                    })
+                    .catch(error => {
+                        console.error("Error updating schedule:", error);
+                    });
+                });
+
+                // END OF EVENT LISTENERS FOR UPDATING DATA
+
+
+
+                // EVENT LISTENERS FOR DELETING DATA
+
+                // Event listener for deleting user
+                document.querySelectorAll("#delete-user-btn").forEach(button => {
+                        button.addEventListener("click", function() {
+                            console.log("test");
+                            const row = this.closest("tr");
+                            const username = row.querySelector("td:nth-child(1)").textContent;
+                            console.log("Deleting user with username:", username);
+
+                            fetch("/admin/delete-user", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json"
+                                },
+                                body: JSON.stringify({ username })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log("User deleted:", data);
+                                location.reload(); // Refresh the page to see the updates
+                            })
+                            .catch(error => {
+                                console.error("Error deleting user:", error);
+                            });
+                        });
+                });
+
+                // Event listener for deleting trainer
+                document.querySelectorAll("#delete-trainer-btn").forEach(button => {
+                        button.addEventListener("click", function() {
+                            console.log("test");
+                            const row = this.closest("tr");
+                            const id = row.querySelector("td:nth-child(1)").textContent;
+                            console.log("Deleting trainer with id:", id);
+
+                            fetch("/admin/delete-trainer", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json"
+                                },
+                                body: JSON.stringify({ id })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log("Trainer deleted:", data);
+                                location.reload(); // Refresh the page to see the updates
+                            })
+                            .catch(error => {
+                                console.error("Error deleting trainer:", error);
+                            });
+                        });
+                });
+
+                // Event listener for deleting programme
+                document.querySelectorAll("#delete-program-btn").forEach(button => {
+                        button.addEventListener("click", function() {
+                            const row = this.closest("tr");
+                            const id = row.querySelector("td:nth-child(1)").textContent;
+                            console.log("Deleting program with id:", id);
+
+                            fetch("/admin/delete-programme", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json"
+                                },
+                                body: JSON.stringify({ id })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log("Program deleted:", data);
+                                location.reload(); // Refresh the page to see the updates
+                            })
+                            .catch(error => {
+                                console.error("Error deleting program:", error);
+                            });
+                        });
+                    });
+
+                // Event listener for deleting schedule
+                document.querySelectorAll("#delete-schedule-btn").forEach(button => {
+                        button.addEventListener("click", function() {
+                            const row = this.closest("tr");
+                            const id = row.querySelector("td:nth-child(1)").textContent;
+                            console.log("Deleting schedule with id:", id);
+
+                            fetch("/admin/delete-programme-schedule", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json"
+                                },
+                                body: JSON.stringify({ id })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log("Schedule deleted:", data);
+                                location.reload(); // Refresh the page to see the updates
+                            })
+                            .catch(error => {
+                                console.error("Error deleting schedule:", error);
+                            });
+                        });
+                });
+            })
+            .catch(error => {
+                console.error("Error fetching data:", error);
+            });
+
+
+
+            /* EVENT LISTENERS FOR POPUP BOTTONS */
+
+            // Event listeners for popup buttons
+            document.getElementById("cancel-edit-button").addEventListener("click", closeEditPopup);
+            function closeEditPopup() {
+                document.getElementById("edit-overlay").style.display = 'none';
+                document.getElementById("edit-popup").style.display = 'none';
+            }
+
+
+            // Event listeners for trainer popup buttons
+            document.getElementById("cancel-trainer-button").addEventListener("click", function() {
+                document.getElementById("edit-trainer-overlay").style.display = 'none';
+                document.getElementById("edit-trainer-popup").style.display = 'none';
+            });
+            function openEditTrainerPopup(id, name, surname, address, phone, email) {
+                document.getElementById("edit-trainer-id").value = id;
+                document.getElementById("edit-trainer-name").value = name;
+                document.getElementById("edit-trainer-surname").value = surname;
+                document.getElementById("edit-trainer-address").value = address;
+                document.getElementById("edit-trainer-phone").value = phone;
+                document.getElementById("edit-trainer-email").value = email;
+                document.getElementById("edit-trainer-overlay").style.display = 'block';
+                document.getElementById("edit-trainer-popup").style.display = 'block';
+            }
+
+            // Event listeners for program popup buttons
+            function openEditProgramPopup(id, title, type, description, goal, difficulty) {
+                document.getElementById("edit-program-id").value = id;
+                document.getElementById("edit-program-title").value = title;
+                document.getElementById("edit-program-type").value = type;
+                document.getElementById("edit-program-description").value = description;
+                document.getElementById("edit-program-goal").value = goal;
+                document.getElementById("edit-program-difficulty").value = difficulty;
+                document.getElementById("edit-program-overlay").style.display = 'block';
+                document.getElementById("edit-program-popup").style.display = 'block';
+            }
+            document.getElementById("cancel-program-button").addEventListener("click", function() {
+                document.getElementById("edit-program-overlay").style.display = 'none';
+                document.getElementById("edit-program-popup").style.display = 'none';
+            });
+
+            // Event listeners for schedule popup buttons
+            function openEditSchedulePopup(id, title, day, hour, trainer, capacity) {
+                document.getElementById("edit-schedule-id").value = id;
+
+
+                const date = new Date(day);
+
+                const timeParts = hour.split(":");
+
+                // Extract hours and minutes
+                hour = timeParts[0];
+                let minutes = timeParts[1];
+
+                // Pad hours with leading zero if necessary (to ensure two digits)
+                if (hour.length < 2) {
+                    hour = "0" + hour;
+                }
+
+                // Construct the time string in HH:MM format
+                const formattedTime = `${hour}:${minutes}`;
+
+                // fill title <select> with all programs and select the one with name title
+                const select = document.getElementById("edit-schedule-title");
+                programs.forEach(program => {
+                    const option = document.createElement("option");
+                    option.value = program.title;
+                    option.textContent = program.title;
+                    select.appendChild(option);
+                });
+
+                // same for trainer field
+                const trainerSelect = document.getElementById("edit-schedule-trainer");
+                trainers.forEach(trainer => {
+                    const option = document.createElement("option");
+                    option.value = trainer.name + " " + trainer.surname;
+                    option.textContent = trainer.name + " " + trainer.surname;
+                    trainerSelect.appendChild(option);
+                });
+
+
+                document.getElementById("edit-schedule-title").value = title;
+                document.getElementById("edit-schedule-day").valueAsDate = date;
+                document.getElementById("edit-schedule-hour").value = formattedTime;
+                document.getElementById("edit-schedule-trainer").value = trainer;
+                document.getElementById("edit-schedule-capacity").value = capacity;
+                document.getElementById("edit-schedule-overlay").style.display = 'block';
+                document.getElementById("edit-schedule-popup").style.display = 'block';
+            }
+            document.getElementById("cancel-schedule-button").addEventListener("click", function() {
+                document.getElementById("edit-schedule-overlay").style.display = 'none';
+                document.getElementById("edit-schedule-popup").style.display = 'none';
+            });
+
+
+            /* END OF EVENT LISTENERS FOR POPUP BUTTONS */
+
+
+            
+        });
+
+
+    </script>
+
+    </body>
+
+</html>

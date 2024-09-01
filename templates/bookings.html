@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book an Appointment</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #111213;
+            color: white;
+        }
+        form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: none;
+        }
+        button {
+            background-color: yellow;
+            color: #111213;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    {% include 'nav.html' %}
+    <h1>Book an Appointment</h1>
+    <div>
+        <label for="program">Choose a Program:</label>
+        <select id="program" name="program">
+        </select>
+        <label for="date">Choose a Date:</label>
+        <input type="date" id="date" name="date" value="2024-08-30">
+        <button id="search-btn">Check Availability & Book</button>
+    </div>
+
+    <script>
+        document.getElementById('search-btn').addEventListener('click', function() {
+            // get the selected program and date
+            const program = document.getElementById('program').value;
+            const date = document.getElementById('date').value;
+            // request to get-schedule by sending search data using json
+            fetch('/get-schedule', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ program, date })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // if no schedule is available
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        console.log(data);
+                        // use data to display available slots
+                    }
+                });
+
+        });
+        // when page loads fetch data from get-programs endpoint
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/get-programmes')
+                .then(response => response.json())
+                .then(data => {
+                    // extract title, type, description, goal and difficulty from each program
+                    data.forEach(program => {
+                        const { title, type, description, goal, difficulty } = program;
+                        // load title to select box
+                        const programSelect = document.getElementById('program');
+                        const option = document.createElement('option');
+                        option.value = title;
+                        option.text = title;
+                        programSelect.appendChild(option);
+
+                    });
+
+                });
+        });
+    </script>
+</body>
+</html>

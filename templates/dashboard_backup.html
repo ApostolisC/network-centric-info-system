@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="icon" type="image/x-icon" href="/static/images/logo.png">
+    <link rel="stylesheet" href="/static/styles/dashboard.css">
+</head>
+<body>
+    <h1 class="title">Admin Dashboard</h1>
+    <div class="dashboard">
+
+
+        <div class="section new-accounts-container">
+            <h2 id="new-accounts-container-title">Pending Account Approvals</h2>
+            <table id="accounts-table">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Name</th>
+                        <th>Surname</th>
+                        <th>Country</th>
+                        <th>City</th>
+                        <th>Address</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Rows will be dynamically loaded here -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section user-management">
+            <h2>User Management</h2>
+            <div id="user-management-list">
+                <!-- User table will be dynamically loaded here -->
+            </div>
+        </div>
+
+
+        <div class="section gym-info-management">
+            <h2>Gym Information Management</h2>
+            
+            <!-- Tab navigation -->
+            <div class="tab-container">
+                <button class="tab-link active" onclick="openTab(event, 'trainers')">Trainers</button>
+                <button class="tab-link" onclick="openTab(event, 'programs')">Programs</button>
+                <button class="tab-link" onclick="openTab(event, 'schedule')">Time Schedule</button>
+            </div>
+            
+            <!-- Tab content -->
+            <div id="trainers" class="tab-content", style="display:block;">
+                <h3>Trainers</h3>
+                <table id="trainers-list">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Surname</th>
+                            <th>Address</th>
+                            <th>Phone</th>
+                            <th>Email</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Rows will be dynamically loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        
+            <div id="programs" class="tab-content" style="display:none;">
+                <h3>Programs</h3>
+                <table id="programme-list">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                            <th>Goal</th>
+                            <th>Difficulty</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Rows will be dynamically loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        
+            <div id="schedule" class="tab-content" style="display:none;">
+                <h3>Time Schedule</h3>
+                <table id="schedule-list">
+                    <thead>
+                        <tr>
+                            <th>Day</th>
+                            <th>Hour</th>
+                            <th>Trainer</th>
+                            <th>Maximum Capacity</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Rows will be dynamically loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+
+        <div class="logout">
+            <form id="logout-form" action="/admin/logout" method="POST">
+                <button type="submit">Logout</button>
+            </form>
+        </div>
+    </div>
+
+    <!-------------------- 1st section -------------------------->
+    
+    <!-- Popup for account approval -->
+    <div class="overlay" id="overlay"></div>
+    <div class="popup" id="account-popup">
+        <h3>Account Approval</h3>
+        <div id="account-info">
+            <!-- Account info will be populated here -->
+        </div>
+        <div class="popup-buttons">
+            <button class="approve" id="approve-button">Approve</button>
+            <button class="reject" id="reject-button">Reject</button>
+            <button class="cancel" id="cancel-approval">Cancel</button>
+        </div>
+    </div>
+    
+    <!-- Popup for role selection -->
+    <div class="role-popup" id="role-popup">
+        <h3>Select Role</h3>
+        <p>Do you want to set this user as:</p>
+        <button class="confirm-btn" id="set-user">User</button>
+        <button class="confirm-btn" id="set-admin">Admin</button>
+        <button class="cancel-btn" id="cancel-role">Cancel</button>
+    </div>
+
+    <!-------------------- 2nd section -------------------------->
+    <!-- Popup for editing user information -->
+    <div class="overlay" id="edit-overlay"></div>
+        <div class="edit-popup" id="edit-popup">
+            <h3>Edit User Information</h3>
+            <form id="edit-user-form">
+                <label for="edit-username">Username:</label>
+                <input type="text" id="edit-username" name="username" readonly>
+
+                <label for="edit-name">Name:</label>
+                <input type="text" id="edit-name" name="name">
+
+                <label for="edit-surname">Surname:</label>
+                <input type="text" id="edit-surname" name="surname">
+
+                <label for="edit-country">Country:</label>
+                <input type="text" id="edit-country" name="country">
+
+                <label for="edit-city">City:</label>
+                <input type="text" id="edit-city" name="city">
+
+                <label for="edit-address">Address:</label>
+                <input type="text" id="edit-address" name="address">
+
+                <label for="edit-email">Email:</label>
+                <input type="email" id="edit-email" name="email">
+
+                <label for="edit-phone">Phone:</label>
+                <input type="text" id="edit-phone" name="phone">
+
+                <label for="edit-role">Role:</label>
+                <select id="edit-role" name="role">
+                    <option value="user">User</option>
+                    <option value="admin">Admin</option>
+                </select>
+
+                <div class="popup-buttons">
+                    <button type="button" class="save-btn" id="save-edit-button">Save</button>
+                    <button type="button" class="cancel-btn" id="cancel-edit-button">Cancel</button>
+                </div>
+            </form>
+        </div>
+
+    <!-------------------- 3rd section -------------------------->
+    
+    <script>
+        function openTab(evt, tabName) {
+                // if name equals to trainers hide the other 2
+                // if name equals to programmes hide the other 2
+                // if name equals to schedule hide the other 2
+
+                // Get all elements with class="tab-content" and hide them
+                document.querySelectorAll(".tab-content").forEach(tabContent => {
+                    tabContent.style.display = "none";
+                });
+
+                // Get all elements with class="tab-link" and remove the class "active"
+                document.querySelectorAll(".tab-link").forEach(tabLink => {
+                    tabLink.classList.remove("active");
+                });
+
+                // Show the current tab, and add an "active" class to the button that opened the tab
+                document.getElementById(tabName).style.display = "block";
+                evt.currentTarget.classList.add("active");
+
+            }
+        document.addEventListener('DOMContentLoaded', function() {
+            // Function to open the account approval popup
+            function openPopup(username) {
+                document.getElementById('account-info').textContent = 'Account username: ' + username;
+
+
+                document.getElementById('overlay').style.display = 'block';
+                document.getElementById('account-popup').style.display = 'block';
+                document.querySelector('#approve-button').dataset.username = username;
+                document.querySelector('#reject-button').dataset.username = username;
+            }
+
+            function closePopup() {
+                document.getElementById('overlay').style.display = 'none';
+                document.getElementById('account-popup').style.display = 'none';
+                document.getElementById('role-popup').style.display = 'none';
+            }
+
+            document.getElementById('approve-button').addEventListener('click', function() {
+                const username = this.dataset.username;
+                document.getElementById('account-popup').style.display = 'none';
+                document.getElementById('overlay').style.display = 'block';
+                document.getElementById('role-popup').style.display = 'block';
+                document.querySelector('#role-popup').dataset.username = username;
+            });
+
+            document.getElementById('reject-button').addEventListener('click', function() {
+                const username = this.dataset.username;
+                console.log(username);
+                setRole(username, 'rejected');
+            });
+
+            document.getElementById('cancel-approval').addEventListener('click', function() {
+                document.getElementById('overlay').style.display = 'none';
+                document.getElementById('account-popup').style.display = 'none';
+            });
+    
+            document.getElementById('cancel-role').addEventListener('click', function() {
+                document.getElementById('overlay').style.display = 'none';
+                document.getElementById('role-popup').style.display = 'none';
+                document.getElementById('account-popup').style.display = 'block';
+            });
+    
+            document.getElementById('set-user').addEventListener('click', function() {
+                const username = document.querySelector('#role-popup').dataset.username;
+                setRole(username, 'user');
+            });
+    
+            document.getElementById('set-admin').addEventListener('click', function() {
+                const username = document.querySelector('#role-popup').dataset.username;
+                setRole(username, 'admin');
+            });
+    
+            function setRole(username, role) {
+                fetch(`/admin/change-account-role`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ "username": username, "role": role })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert(`Account set as ${role} successfully`);
+                    closePopup();
+                    location.reload();
+                })
+                .catch(error => {
+                    alert("Error setting role:", error);
+                });
+            }
+
+
+            fetch("/admin/fetch-dashboard-data", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Data:", data);
+                const newAccounts = data.newAccounts;
+                const users = data.accounts;
+                const trainers = data.trainers;
+                const programs = data.programmes;
+                const schedule = data.programmeSchedule;
+
+                // Populate the new accounts table
+                const tableBody = document.querySelector("#accounts-table tbody");
+                newAccounts.forEach(account => {
+                    const row = document.createElement("tr");
+
+                    row.innerHTML = `
+                        <td>${account.username}</td>
+                        <td>${account.name}</td>
+                        <td>${account.surname}</td>
+                        <td>${account.country}</td>
+                        <td>${account.city}</td>
+                        <td>${account.address}</td>
+                        <td>${account.email}</td>
+                        <td>${account.phone}</td>
+                        <td>
+                            <button class="change-role-btn" data-username="${account.username}">Change Status</button>
+                        </td>
+                    `;
+
+                    tableBody.appendChild(row);
+                });
+
+
+                // Add event listeners for accept and reject buttons
+                document.querySelectorAll(".change-role-btn").forEach(button => {
+                    button.addEventListener("click", function() {
+                        const username = this.dataset.username;
+                        openPopup(username);
+                    });
+                });
+
+                // Populate the user management table
+                const userTable = document.getElementById("user-management-list");
+                const table = document.createElement("table");
+                table.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Name</th>
+                            <th>Surname</th>
+                            <th>Country</th>
+                            <th>City</th>
+                            <th>Address</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Role</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    ${users.map(user => `
+                        <tr>
+                            <td>${user.username}</td>
+                            <td>${user.name}</td>
+                            <td>${user.surname}</td>
+                            <td>${user.country}</td>
+                            <td>${user.city}</td>
+                            <td>${user.address}</td>
+                            <td>${user.email}</td>
+                            <td>${user.phone}</td>
+                            <td>${user.role}</td>
+                            <td>
+                                <button class="edit-btn" data-user="${user}">Change Info</button>
+                            </td>
+                        </tr>
+                    `).join('')}
+                    </tbody>
+                `;
+                userTable.appendChild(table);
+
+                document.querySelectorAll(".edit-btn").forEach(button => {
+                    button.addEventListener("click", function() {
+                            // get the row of the table the button belongs to and then extract all information of each column on this.dataset
+                            const row = this.closest("tr");
+                            const username = row.querySelector("td:nth-child(1)").textContent;
+                            const name = row.querySelector("td:nth-child(2)").textContent;
+                            const surname = row.querySelector("td:nth-child(3)").textContent;
+                            const country = row.querySelector("td:nth-child(4)").textContent;
+                            const city = row.querySelector("td:nth-child(5)").textContent;
+                            const address = row.querySelector("td:nth-child(6)").textContent;
+                            const email = row.querySelector("td:nth-child(7)").textContent;
+                            const phone = row.querySelector("td:nth-child(8)").textContent;
+                            const role = row.querySelector("td:nth-child(9)").textContent;
+
+                            // console.log everything
+                            console.log(username, name, surname, country, city, address, email, phone, role);
+                            openEditPopup(username, name, surname, country, city, address, email, phone, role);
+
+
+                            //const username = this.dataset.username;
+                            //openEditPopup(username);
+                        });
+
+
+                })
+
+                // populate trainers list
+                const trainersList = document.getElementById("trainers-list");
+                trainersList.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Surname</th>
+                            <th>Address</th>
+                            <th>Phone</th>
+                            <th>Email</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    ${trainers.map(trainer => `
+                        <tr>
+                            <td>${trainer.name}</td>
+                            <td>${trainer.surname}</td>
+                            <td>${trainer.address}</td>
+                            <td>${trainer.phone}</td>
+                            <td>${trainer.email}</td>
+                            <td>
+                                <button class="edit-trainer-btn" data-trainer="${trainer}">Change Info</button>
+                            </td>
+                        </tr>
+                    `).join('')}
+                    </tbody>
+                `;
+
+                document.querySelectorAll(".edit-trainer-btn").forEach(button => {
+                    button.addEventListener("click", function() {
+                            // get the row of the table the button belongs to and then extract all information of each column on this.dataset
+                            const row = this.closest("tr");
+                            const name = row.querySelector("td:nth-child(1)").textContent;
+                            const surname = row.querySelector("td:nth-child(2)").textContent;
+                            const address = row.querySelector("td:nth-child(3)").textContent;
+                            const phone = row.querySelector("td:nth-child(4)").textContent;
+                            const email = row.querySelector("td:nth-child(5)").textContent;
+
+
+                            openEditTrainerPopup(name, surname, address, phone, email);
+
+
+                            //const username = this.dataset.username;
+                            //openEditPopup(username);
+                        });
+
+
+                })
+
+                // populate programs list
+                const programsList = document.getElementById("programme-list");
+                programsList.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                            <th>Goal</th>
+                            <th>Difficulty</th>
+                            <th> Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    ${programs.map(program => `
+                        <tr>
+                            <td>${program.title}</td>
+                            <td>${program.type}</td>
+                            <td>${program.description}</td>
+                            <td>${program.goal}</td>
+                            <td>${program.difficulty}</td>
+                            <td>
+                                <button class="edit-program-btn" data-username="${program.id}">Change Info</button>
+                            </td>
+                        </tr>
+                    `).join('')}
+                    </tbody>
+                `;
+
+                // populate schedule list
+                const scheduleList = document.getElementById("schedule-list");
+                scheduleList.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th>Day</th>
+                            <th>Hour</th>
+                            <th>Trainer</th>
+                            <th>Maximum Capacity</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    ${schedule.map(schedule => `
+                        <tr>
+                            <td>${schedule.day}</td>
+                            <td>${schedule.hour}</td>
+                            <td>${schedule.trainer}</td>
+                            <td>${schedule.capacity}</td>
+                            <td>
+                                <button class="edit-schedule-btn" data-username="${schedule.id}">Change Info</button>
+                            </td>
+                        </tr>
+                    `).join('')}
+                    </tbody>
+                `;
+            })
+            .catch(error => {
+                console.error("Error fetching data:", error);
+            });
+
+
+
+            // Event listeners for popup buttons
+            document.getElementById("cancel-edit-button").addEventListener("click", closeEditPopup);
+            document.getElementById("save-edit-button").addEventListener("click", saveUserInfo);
+
+            function openEditPopup(username, name, surname, country, city, address, email, phone, role) {
+                document.getElementById("edit-username").value = username;
+                document.getElementById("edit-name").value = name;
+                document.getElementById("edit-surname").value = surname;
+                document.getElementById("edit-country").value = country;
+                document.getElementById("edit-city").value = city;
+                document.getElementById("edit-address").value = address;
+                document.getElementById("edit-email").value = email;
+                document.getElementById("edit-phone").value = phone;
+                document.getElementById("edit-role").value = role;
+                document.getElementById("edit-overlay").style.display = 'block';
+                document.getElementById("edit-popup").style.display = 'block';
+            }
+
+
+            function saveUserInfo() {
+                const username = document.getElementById("edit-username").value;
+                const name = document.getElementById("edit-name").value;
+                const surname = document.getElementById("edit-surname").value;
+                const country = document.getElementById("edit-country").value;
+                const city = document.getElementById("edit-city").value;
+                const address = document.getElementById("edit-address").value;
+                const email = document.getElementById("edit-email").value;
+                const phone = document.getElementById("edit-phone").value;
+                const role = document.getElementById("edit-role").value;
+
+                fetch("/admin/update-user-info", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        "username":username, "name":name, "surname":surname, "country":country, "city": city, "address": address, "email": email, "phone": phone, "role": role
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("User updated:", data);
+                    closeEditPopup();
+                    location.reload();
+                })
+                .catch(error => {
+                    console.error("Error updating user:", error);
+                });
+            }
+
+            openEditTrainerPopup = (name, surname, address, phone, email) => {
+                document.getElementById("edit-trainer-name").value = name;
+                document.getElementById("edit-trainer-surname").value = surname;
+                document.getElementById("edit-trainer-address").value = address;
+                document.getElementById("edit-trainer-phone").value = phone;
+                document.getElementById("edit-trainer-email").value = email;
+                document.getElementById("edit-trainer-overlay").style.display = 'block';
+                document.getElementById("edit-trainer-popup").style.display = 'block';
+            }
+
+            function closeEditTrainerPopup() {
+                document.getElementById("edit-trainer-overlay").style.display = 'none';
+                document.getElementById("edit-trainer-popup").style.display = 'none';
+            }
+
+            function closeEditPopup() {
+                document.getElementById("edit-overlay").style.display = 'none';
+                document.getElementById("edit-popup").style.display = 'none';
+            }
+
+            function saveTrainerInfo() {
+                const name = document.getElementById("edit-trainer-name").value;
+                const surname = document.getElementById("edit-trainer-surname").value;
+                const address = document.getElementById("edit-trainer-address").value;
+                const phone = document.getElementById("edit-trainer-phone").value;
+                const email = document.getElementById("edit-trainer-email").value;
+
+                fetch("/admin/update-trainer-info", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        "name":name, "surname":surname, "address":address, "phone": phone, "email": email
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Trainer updated:", data);
+                    closeEditTrainerPopup();
+                    location.reload();
+                })
+                .catch(error => {
+                    console.error("Error updating trainer:", error);
+                });
+            }
+
+
+
+
+
+        });
+    </script>
+    
+    </body>
+    
+</html>

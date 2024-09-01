@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #111213;
+            color: white;
+        }
+        .container {
+            max-width: 800px;
+            margin: 10px auto;
+            padding: 20px;
+            background-color: #222;
+            border-radius: 10px;
+        }
+        h1 {
+            color: yellow;
+            text-align: center;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .section h2 {
+            color: yellow;
+            margin-bottom: 10px;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: none;
+        }
+        button {
+            background-color: yellow;
+            color: #111213;
+            font-size: 1rem;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #ccc;
+        }
+        .logout-btn {
+            background-color: red;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    {% include 'nav.html' %}
+    <div class="container">
+        <h1>User Profile</h1>
+
+        <!-- Booking History Section -->
+        <div class="section">
+            <h2>Booking History</h2>
+            <a href="/history"><button>Open History</button></a>
+        </div>
+
+        <!-- Update Profile Section -->
+        <div class="section">
+            <h2>Update Profile Information</h2>
+            <form id="update-profile-form">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" disabled>
+
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name">
+
+                <label for="surname">Surname:</label>
+                <input type="text" id="surname" name="surname">
+
+                <label for="country">Country:</label>
+                <input type="text" id="country" name="country">
+
+                <label for="city">City:</label>
+                <input type="text" id="city" name="city">
+
+                <label for="address">Address:</label>
+                <input type="text" id="address" name="address">
+
+                <label for="email">Email:</label>
+                <input type="text" id="email" name="email">
+
+                <label for="phone">Phone:</label>
+                <input type="text" id="phone" name="phone">
+
+                <button type="submit">Update Profile</button>
+            </form>
+        </div>
+
+        <!-- Change Password Section -->
+        <div class="section">
+            <h2>Change Password</h2>
+            <form id="change-password-form">
+                <label for="current-password">Current Password:</label>
+                <input type="password" id="current-password" name="current_password">
+
+                <label for="new-password">New Password:</label>
+                <input type="password" id="new-password" name="new_password">
+
+                <label for="confirm-password">Confirm New Password:</label>
+                <input type="password" id="confirm-password" name="confirm_password">
+
+                <button type="submit">Change Password</button>
+            </form>
+        </div>
+
+        <!-- Logout Button -->
+        <div class="section">
+            <form id="logout-form">
+                <button type="submit" class="logout-btn">Logout</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Fetch user profile data
+            fetch("/user-profile/")
+                .then(response => response.json())
+                .then(data => {
+                    // Populate the form fields with user data
+                    document.getElementById("username").value = data.username;
+                    document.getElementById("name").value = data.name;
+                    document.getElementById("surname").value = data.surname;
+                    document.getElementById("country").value = data.country;
+                    document.getElementById("city").value = data.city;
+                    document.getElementById("address").value = data.address;
+                    document.getElementById("email").value = data.email;
+                    document.getElementById("phone").value = data.phone;
+                })
+                .catch(error => console.error("Error fetching profile data:", error));
+        });
+
+        document.getElementById("update-profile-form").addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            var formData = {
+                username: document.getElementById("username").value,
+                name: document.getElementById("name").value,
+                surname: document.getElementById("surname").value,
+                country: document.getElementById("country").value,
+                city: document.getElementById("city").value,
+                address: document.getElementById("address").value,
+                email: document.getElementById("email").value,
+                phone: document.getElementById("phone").value
+            };
+
+            fetch("/update-profile/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Success:", data);
+                alert("Profile updated successfully");
+                location.reload();
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("Profile update failed");
+            });
+        });
+
+        document.getElementById("change-password-form").addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Check if password and confirm password match
+            if (document.getElementById("new-password").value !== document.getElementById("confirm-password").value) {
+                alert("Passwords do not match");
+                return;
+            }
+
+            var formData = {
+                username: document.getElementById("username").value,
+                current_password: document.getElementById("current-password").value,
+                new_password: document.getElementById("new-password").value,
+                confirm_password: document.getElementById("confirm-password").value
+            };
+
+            fetch("/password-reset/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    // If response status is not OK, throw an error
+                    return response.json().then(errorData => {
+                        throw new Error(errorData.message || 'An error occurred');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Handle success based on server response
+                console.log("Success:", data);
+                alert("Password changed successfully");
+            })
+            .catch(error => {
+                // Handle errors from server response
+                console.error("Error:", error);
+                alert("Password change failed: " + error.message);
+            });
+        });
+
+        document.getElementById("logout-form").addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            fetch("/logout", {
+                method: "POST"
+            })
+            .then(response => {
+                if (response.ok) {
+                    window.location.href = '/login';
+                } else {
+                    console.error("Logout failed");
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking History</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #111213;
+            color: white;
+            padding: 20px;
+        }
+        .history {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .history-item {
+            padding: 10px;
+            border-bottom: 1px solid #333;
+        }
+        .history-item:last-child {
+            border-bottom: none;
+        }
+        .history-item h3 {
+            color: yellow;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    {% include 'nav.html' %}
+    <h1>Your Booking History</h1>
+    <div class="history">
+        <div class="history-item">
+            <h3>Weight Loss Program</h3>
+            <p>Date: 2024-08-01 | Time: 10:00 AM</p>
+        </div>
+        <div class="history-item">
+            <h3>Strength Training</h3>
+            <p>Date: 2024-08-03 | Time: 02:00 PM</p>
+        </div>
+    </div>
+</body>
+</html>

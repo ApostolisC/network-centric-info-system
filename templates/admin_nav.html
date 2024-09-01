@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Navigation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .admin-nav {
+            background-color: #2c3e50; /* Dark navy color */
+            padding: 20px 20px;
+        }
+        .admin-nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: space-around;
+        }
+        .admin-nav ul li {
+            margin: 0;
+        }
+        .admin-nav ul li a {
+            color: #ecf0f1; /* Light grey color */
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .admin-nav ul li a:hover {
+            background-color: #34495e; /* Slightly lighter navy */
+            color: #ffffff;
+        }
+        .admin-nav ul li .logout-btn {
+            background-color: #e74c3c; /* Red color */
+            color: #ffffff;
+        }
+        .admin-nav ul li .logout-btn:hover {
+            background-color: #c0392b; /* Darker red */
+        }
+    </style>
+</head>
+<body>
+
+<nav class="admin-nav">
+    <ul>
+        <li><a href="/admin/dashboard">Dashboard</a></li>
+        <li><a href="/admin/user-management">User Management</a></li>
+        <li><a href="/admin/gym-info-management">Gym Information Management</a></li>
+        <li><a href="/logout" class="logout-btn">Logout</a></li>
+    </ul>
+</nav>
+
+</body>
+</html>
