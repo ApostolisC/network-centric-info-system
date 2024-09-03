@@ -78,6 +78,12 @@ def check_admin():
             return True
     return False
 
+class checkIfAdmin(Resource):
+    def get(self):
+        if check_token() and check_admin():
+            return jsonify({'message': 'True'})
+        else:
+            return jsonify({'message': 'False'})
 class Login(Resource):
     def post(self):
         data = request.get_json(force=True)
@@ -167,6 +173,7 @@ class Signup(Resource):
 
 ###################
 # Authentication Routes
+api.add_resource(checkIfAdmin, '/check-if-admin')
 api.add_resource(Login, '/login/')
 api.add_resource(Logout, '/logout/')
 api.add_resource(Signup, '/signup/')
@@ -404,7 +411,6 @@ class FetchDashboardData(Resource):
         except Exception as e:
             print(f"Error fetching dashboard data: {e}")
             return jsonify({'message': 'Failed to fetch dashboard data'}), 500
-
 class UpdateTrainer(Resource):
     def post(self):
         if not check_token() or not check_admin():
@@ -427,7 +433,6 @@ class UpdateTrainer(Resource):
         except Exception as e:
             database.rollback()
             return jsonify({'message': 'Failed to update trainer'}), 500
-
 class UpdateProgramme(Resource):
     def post(self):
         if not check_token() or not check_admin():
@@ -450,7 +455,6 @@ class UpdateProgramme(Resource):
         except Exception as e:
             database.rollback()
             return jsonify({'message': 'Failed to update programme'}), 500
-
 class UpdateProgrammeSchedule(Resource):
     """
     We receive id, title, day, hour, trainer, capacity
@@ -502,7 +506,6 @@ class UpdateProgrammeSchedule(Resource):
         except Exception as e:
             database.rollback()
             return jsonify({'message': 'Failed to update programme schedule'}), 500
-
 class CreateTrainer(Resource):
     def post(self):
         if not check_token() or not check_admin():
@@ -524,7 +527,6 @@ class CreateTrainer(Resource):
         except Exception as e:
             database.rollback()
             return jsonify({'message': 'Failed to create trainer'}), 500
-
 class CreateProgramme(Resource):
     def post(self):
         if not check_token() or not check_admin():
@@ -546,7 +548,6 @@ class CreateProgramme(Resource):
         except Exception as e:
             database.rollback()
             return jsonify({'message': 'Failed to create programme'}), 500
-
 class CreateProgrammeSchedule(Resource):
     def post(self):
         if not check_token() or not check_admin():
@@ -592,8 +593,6 @@ class CreateProgrammeSchedule(Resource):
         except Exception as e:
             database.rollback()
             return jsonify({'message': 'Failed to create programme schedule'}), 500
-
-
 class DeleteTrainer(Resource):
     def post(self):
         if not check_token() or not check_admin():
@@ -611,7 +610,6 @@ class DeleteTrainer(Resource):
         except Exception as e:
             database.rollback()
             return jsonify({'message': 'Failed to delete trainer'}), 500
-
 class DeleteProgramme(Resource):
     def post(self):
         if not check_token() or not check_admin():
@@ -629,7 +627,6 @@ class DeleteProgramme(Resource):
         except Exception as e:
             database.rollback()
             return jsonify({'message': 'Failed to delete programme'}), 500
-
 class DeleteProgrammeSchedule(Resource):
     def post(self):
         if not check_token() or not check_admin():
@@ -647,7 +644,6 @@ class DeleteProgrammeSchedule(Resource):
         except Exception as e:
             database.rollback()
             return jsonify({'message': 'Failed to delete programme schedule'}), 500
-
 class DeleteUser(Resource):
     def post(self):
         if not check_token() or not check_admin():
@@ -669,7 +665,6 @@ class DeleteUser(Resource):
         except Exception as e:
             database.rollback()
             return jsonify({'message': 'Failed to delete user'}), 500
-
 class CreateUser(Resource):
     def post(self):
         if not check_token() or not check_admin():
@@ -714,14 +709,12 @@ class CreateUser(Resource):
             print(e)
             database.rollback()
             return jsonify({'message': 'Failed to create user'}), 500
-
 class AdminNews(Resource):
     def get(self):
         if not check_token() or not check_admin():
-            return jsonify({'message': 'Unauthorized'}),
+            return redirect('/login/')
 
         return make_response(render_template('admin_news.html'))
-
 class AdminGetNews(Resource):
     def get(self):
         if not check_token() or not check_admin():
@@ -747,7 +740,6 @@ class AdminGetNews(Resource):
             return jsonify(news_list)
         except Exception as e:
             return jsonify({'message': 'Failed to fetch news'}), 500
-
 class EditNews(Resource):
     def post(self):
         if not check_token() or not check_admin():
@@ -762,14 +754,17 @@ class EditNews(Resource):
         date = data.get('date')
         content = data.get('content')
         author = data.get('author')
+        image = data.get('image')
+
+        if image.startswith('data:image'):
+            image_data = image.split(',')[1]  # Remove the prefix
+            image = base64.b64decode(image_data)
 
 
-        print(news_id, title, date, author, content)
 
         try:
-            sql_query = "UPDATE NEWS SET TITLE=%s, DATE=%s, CONTENT=%s, AUTHOR=%s WHERE ID=%s"
-            print("sql_query:",sql_query%(title, date, content, author, news_id))
-            cursor.execute(sql_query, (title, date, content, author, news_id))
+            sql_query = "UPDATE NEWS SET TITLE=%s, DATE=%s, CONTENT=%s, AUTHOR=%s, IMAGE=%s WHERE ID=%s"
+            cursor.execute(sql_query, (title, date, content, author, image, news_id))
             database.commit()
 
             print("updated news")
@@ -778,7 +773,27 @@ class EditNews(Resource):
         except Exception as e:
             database.rollback()
             abort(500)
+class UpdateNewsVisibility(Resource):
+    def post(self):
+        if not check_token() or not check_admin():
+            return jsonify({'message': 'Unauthorized'}), 401
 
+        data = request.get_json(force=True)
+        news_id = data.get('id')
+        visible = data.get('visibility')
+
+        if visible not in (0, 1):
+            abort(400)
+
+        try:
+            sql_query = "UPDATE NEWS SET VISIBLE=%s WHERE ID=%s"
+            cursor.execute(sql_query, (visible, news_id))
+            database.commit()
+
+            return 200
+        except Exception as e:
+            database.rollback()
+            return jsonify({'message': 'Failed to update news visibility'}), 500
 class CreateNews(Resource):
     def post(self):
         if not check_token() or not check_admin():
@@ -786,19 +801,31 @@ class CreateNews(Resource):
 
         data = request.get_json(force=True)
         title = data.get('title')
-        content = data.get('content')
+        date = data.get('date')
         author = data.get('author')
+        content = data.get('content')
+        image = data.get('image')
+
+        if image.startswith('data:image'):
+            image_data = image.split(',')[1]
+            image = base64.b64decode(image_data)
+
+        # if date is today or before then visible is 1 else 0
+        # so compare date with today
+        today = datetime.datetime.now().date()
+        news_date = datetime.datetime.strptime(date, '%Y-%m-%d').date()
+        visible = 1 if news_date <= today else 0
 
         try:
-            sql_query = "INSERT INTO NEWS (TITLE, CONTENT, AUTHOR) VALUES (%s, %s, %s)"
-            cursor.execute(sql_query, (title, content, author))
+
+            sql_query = "INSERT INTO NEWS (TITLE, DATE, CONTENT, AUTHOR, IMAGE, VISIBLE) VALUES (%s, %s, %s, %s, %s, %s)"
+            cursor.execute(sql_query, (title, date, content, author, image, visible))
             database.commit()
 
             return 200
         except Exception as e:
             database.rollback()
             return jsonify({'message': 'Failed to create news'}), 500
-
 class DeleteNews(Resource):
     def post(self):
         if not check_token() or not check_admin():
@@ -816,9 +843,6 @@ class DeleteNews(Resource):
         except Exception as e:
             database.rollback()
             return jsonify({'message': 'Failed to delete news'}), 500
-
-
-
 class createOffer(Resource):
     """
     offer will have a title, description, price, start_date, end_date
@@ -843,7 +867,6 @@ class createOffer(Resource):
         except Exception as e:
             database.rollback()
             return jsonify({'message': 'Failed to create offer'}), 500
-
 class deleteOffer(Resource):
     def post(self):
         if not check_token():
@@ -861,7 +884,6 @@ class deleteOffer(Resource):
         except Exception as e:
             database.rollback()
             return jsonify({'message': 'Failed to delete offer'}), 500
-
 class updateOffer(Resource):
     def post(self):
         if not check_token():
@@ -908,10 +930,9 @@ api.add_resource(AdminGetNews, '/admin/get-news')
 api.add_resource(CreateNews, '/admin/create-news')
 api.add_resource(DeleteNews, '/admin/delete-news')
 api.add_resource(EditNews, '/admin/update-news')
+api.add_resource(UpdateNewsVisibility, '/admin/update-news-visibility')
 
 ###################
-
-
 
 class Index(Resource):
     def get(self):
@@ -919,7 +940,6 @@ class Index(Resource):
 class Services(Resource):
     def get(self):
         return make_response(render_template('services.html'))
-    
 class GetServices(Resource):
     def get(self):
         try:
@@ -1019,7 +1039,6 @@ class GetSchedule(Resource):
             return jsonify(programme_schedule_list)
         except Exception as e:
             return jsonify({'message': 'Failed to fetch programme schedule'}), 500
-
 class GetBookings(Resource):
     def get(self):
         if not check_token():
@@ -1093,6 +1112,29 @@ class History(Resource):
 class News(Resource):
     def get(self):
         return make_response(render_template('news.html'))
+class GetNews(Resource):
+    def get(self):
+        try:
+            sql_query = "SELECT * FROM NEWS WHERE VISIBLE=1"
+            cursor.execute(sql_query)
+            news = cursor.fetchall()
+
+            news_list = []
+            for news_item in news:
+                news_data = {
+                    'id': news_item[0],
+                    'title': news_item[1],
+                    'date': news_item[2],
+                    'content': news_item[3],
+                    'author': news_item[4],
+                    'image': f"data:image/jpeg;base64,{base64.b64encode(news_item[5]).decode('utf-8')}" if news_item[5] else None,
+                    'visible': news_item[6],
+                }
+                news_list.append(news_data)
+
+            return jsonify(news_list)
+        except Exception as e:
+            return jsonify({'message': 'Failed to fetch news'}), 500
 class Profile(Resource):
     def get(self):
         if not check_token():
@@ -1240,21 +1282,13 @@ api.add_resource(GetProgrammes, '/get-programmes/')
 api.add_resource(History, '/history/')
 api.add_resource(GetHistory, '/get-history/')
 api.add_resource(News, '/news/')
+api.add_resource(GetNews, '/get-news/')
 api.add_resource(Profile, '/profile/')
 api.add_resource(UserProfile, '/user-profile/')
 api.add_resource(UpdateProfile, '/update-profile/')
 api.add_resource(PasswordReset, '/password-reset/')
 ###################
 
-class checkIfAdmin(Resource):
-    def get(self):
-        if check_token() and check_admin():
-            return jsonify({'message': 'True'})
-        else:
-            return jsonify({'message': 'False'})
-
-
-api.add_resource(checkIfAdmin, '/check-if-admin')
 
 if __name__ == '__main__':
     app.config['JSON_AS_ASCII'] = False
