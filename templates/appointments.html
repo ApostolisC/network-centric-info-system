@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Current Appointments</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #111213;
+            color: white;
+        }
+        .hero_area {
+            overflow-y: scroll;
+        }
+        .container {
+            max-width: 800px;
+            margin: 10px auto;
+            padding: 20px;
+            background-color: #242132;
+            border-radius: 10px;
+        }
+        h1 {
+            color: white;
+            text-align: center;
+        }
+        .appointment {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid white;
+            border-radius: 10px;
+        }
+        .appointment h2 {
+            margin: 0 0 10px 0;
+            color: yellow;
+        }
+        .appointment p {
+            margin: 5px 0;
+            color: white
+        }
+        button.cancel-btn {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button.cancel-btn:hover {
+            background-color: #ff6666;
+        }
+    </style>
+</head>
+<body>
+    <div class="hero_area">
+        {% include 'nav.html' %}
+        <div class="container">
+            <h1>Current Appointments</h1>
+            <div class="appointments">
+                <!-- Appointments will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch("/get-bookings")
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    const appointmentsContainer = document.querySelector('.appointments');
+                    appointmentsContainer.innerHTML = '';
+
+                    data.forEach(appointment => {
+                        const appointmentDiv = document.createElement('div');
+                        appointmentDiv.classList.add('appointment');
+
+                        appointmentDiv.innerHTML = `
+                            <h2>${appointment.programme} (${appointment.type})</h2>
+                            <p>Day: ${appointment.day}</p>
+                            <p>Time: ${appointment.hour}</p>
+                            <p>Trainer: ${appointment.trainer}</p>
+                            <button class="cancel-btn" data-id="${appointment.id}">Cancel</button>
+                        `;
+
+                        appointmentsContainer.appendChild(appointmentDiv);
+                    });
+
+                    document.querySelectorAll('.cancel-btn').forEach(button => {
+                        button.addEventListener('click', function() {
+                            const bookingId = this.getAttribute('data-id');
+                            fetch('/cancel-booking', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ id: bookingId })
+                            })
+                            .then(response => {
+                                if (response.ok) {
+                                    alert('Booking cancelled successfully');
+                                    location.reload(); // Refresh the page to reflect changes
+                                } else {
+                                    return response.json().then(data => {
+                                        alert(data.message || 'Failed to cancel booking');
+                                    });
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                alert('An error occurred while cancelling the booking');
+                            });
+                        });
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching bookings:', error);
+                    alert('Failed to load appointments');
+                });
+        });
+    </script>
+</body>
+</html>

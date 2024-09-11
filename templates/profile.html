@@ -62,14 +62,27 @@
             color: white;
             border-radius: 10px;
         }
-
         .hero_area {
             overflow-y: scroll;
         }
-
-        .update-btn, .chng-btn, .open-history-btn{
+        .update-btn, .chng-btn, .open-history-btn, .open-appointments-btn {
             margin-top: 10px;
             border-radius: 10px;
+        }
+
+        /* Flexbox for buttons */
+        .buttons-container {
+            display: flex;
+            justify-content: space-between;
+        }
+        .open-appointments-btn {
+            margin-right: 20px; /* Adjust this margin to move the button slightly to the right */
+        }
+
+        .submit-btn {
+            margin-top: 20px;
+            border-radius: 10px;
+            margin-right: 5px
         }
     </style>
 </head>
@@ -81,8 +94,9 @@
     
             <!-- Booking History Section -->
             <div class="section">
-                <h2>Booking History</h2>
-                <a href="/history"><button class="open-history-btn">Open History</button></a>
+                <h2>Current Appointments - Booking History</h2>
+                <a href="/appointments"><button class="submit-btn">Open Appointments</button></a>
+                <a href="/history"><button class="submit-btn">Open History</button></a>
             </div>
     
             <!-- Update Profile Section -->
@@ -113,7 +127,7 @@
                     <label for="phone">Phone:</label>
                     <input type="text" id="phone" name="phone">
     
-                    <button class="update-btn" type="submit">Update Profile</button>
+                    <button class="submit-btn" type="submit">Update Profile</button>
                 </form>
             </div>
     
@@ -130,14 +144,14 @@
                     <label for="confirm-password">Confirm New Password:</label>
                     <input type="password" id="confirm-password" name="confirm_password">
     
-                    <button class="chng-btn" type="submit">Change Password</button>
+                    <button class="submit-btn" type="submit">Change Password</button>
                 </form>
             </div>
     
             <!-- Logout Button -->
             <div class="section">
                 <form id="logout-form">
-                    <button type="submit" class="logout-btn">Logout</button>
+                    <button type="submit" class="logout-btn submit-btn">Logout</button>
                 </form>
             </div>
         </div>

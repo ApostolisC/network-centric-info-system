@@ -1,4 +1,5 @@
 import base64
+import traceback
 from flask import Flask, abort, json, request, jsonify, render_template, redirect, make_response
 from flask_cors import CORS
 from flask_restful import Resource, Api
@@ -1170,13 +1171,16 @@ class GetBookings(Resource):
                     'programme': booking[2],
                     'type': str(booking[3]),
                     'day': booking[4],
-                    "hour": booking[5],
+                    "hour":str(booking[5]),
                     "trainer": booking[6]
                 }
                 bookings_list.append(booking_data)
 
+            print("returning:",bookings_list)
+
             return jsonify(bookings_list)
         except Exception as e:
+            traceback.print_exc()
             return jsonify({'message': 'Failed to fetch bookings'}), 500
 class GetHistory(Resource):
     def get(self):
@@ -1416,6 +1420,13 @@ class CancelBooking(Resource):
         except Exception as e:
             database.rollback()
             return jsonify({'message': 'Failed to cancel booking'}), 500
+        
+class Appointments(Resource):
+    def get(self):
+        if not check_token():
+            return redirect('/login/')
+
+        return make_response(render_template('appointments.html'))
 ###################
 # User Routes
 api.add_resource(Index, '/')
@@ -1423,6 +1434,7 @@ api.add_resource(Services, '/services/')
 api.add_resource(GetServices, '/get-services/')
 api.add_resource(GetSchedule, '/get-schedule/')
 api.add_resource(Bookings, '/bookings/')
+api.add_resource(Appointments, '/appointments/')
 api.add_resource(CreateBooking, '/create-booking/')
 api.add_resource(GetBookings, '/get-bookings/')
 api.add_resource(GetProgrammes, '/get-programmes/')
