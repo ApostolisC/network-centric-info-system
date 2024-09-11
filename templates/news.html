@@ -96,7 +96,7 @@
                         const newsDiv = document.createElement('div');
                         newsDiv.classList.add('news');
         
-                        // Create header with title and date
+                        // Creating header with title and date
                         const headerDiv = document.createElement('div');
                         headerDiv.classList.add('news-header');
                         
@@ -111,22 +111,22 @@
                         headerDiv.appendChild(titleDiv);
                         headerDiv.appendChild(dateDiv);
         
-                        // Create image element
+                        // Creating image element
                         const image = document.createElement('img');
                         image.classList.add('news-image');
                         image.src = news.image; // Adjust property name as needed
         
-                        // Create content element
+                        // Creating content element
                         const contentDiv = document.createElement('div');
                         contentDiv.classList.add('news-content');
                         contentDiv.textContent = news.content;
         
-                        // Create author element
+                        // Creating author element
                         const authorDiv = document.createElement('div');
                         authorDiv.classList.add('news-author');
                         authorDiv.textContent = `By ${news.author}`;
         
-                        // Append everything to the newsDiv
+                        // Appending everything to the newsDiv
                         newsDiv.appendChild(headerDiv);
                         newsDiv.appendChild(image);
                         newsDiv.appendChild(contentDiv);
