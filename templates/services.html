@@ -70,29 +70,27 @@
                 servicesContainer.innerHTML = ''; // Clear existing content
 
                 data.forEach(service => {
-                    // Create a service card div
+                    // service card
                     const serviceDiv = document.createElement('div');
                     serviceDiv.classList.add('service');
 
-                    // Create the image element
+                    // image element
                     const img = document.createElement('img');
                     img.src = service.image || '/static/images/default_service.jpg'; // Fallback image if none exists
                     img.alt = service.title;
 
-                    // Create the title element
+                    // title element
                     const title = document.createElement('h2');
                     title.textContent = service.title;
 
-                    // Create the description paragraph
+                    // description paragraph
                     const description = document.createElement('p');
                     description.textContent = service.description;
 
-                    // Append the elements to the service div
                     serviceDiv.appendChild(img);
                     serviceDiv.appendChild(title);
                     serviceDiv.appendChild(description);
 
-                    // Append the service div to the services container
                     servicesContainer.appendChild(serviceDiv);
                 });
             })
