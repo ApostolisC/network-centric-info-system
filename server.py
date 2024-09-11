@@ -118,24 +118,24 @@ def update_booking_history():
         database.rollback()
         print(f"Error updating booking history: {e}")
         return False
-    
-def check_if_can_book(user_id):
-    # get all bookings from history for user and if there are 2 or more that are canceled withing the current week return False
+
+def check_if_can_book(user_id, cursor):
+    # get all bookings from history for user and if there are 2 or more that are canceled within the current week return False
     try:
         current_date = datetime.datetime.now().date()
         current_week = current_date.isocalendar()[1]
 
-        sql_query = "SELECT * FROM BOOKING_HISTORY WHERE USER=%s AND STATUS='canceled'"
+        sql_query = "SELECT * FROM BOOKINGS_HISTORY WHERE USER=%s AND STATUS='canceled'"
         cursor.execute(sql_query, (user_id,))
         bookings = cursor.fetchall()
 
         count = 0
         for booking in bookings:
-            booking_date = booking[4]
-            booking_week = booking_date.isocalendar()[1]
-
-            if booking_week == current_week:
-                count += 1
+            booking_date = booking[4]  # Make sure this index is correct for your date field
+            if isinstance(booking_date, datetime.date):  # Ensure correct type
+                booking_week = booking_date.isocalendar()[1]
+                if booking_week == current_week:
+                    count += 1
 
         if count >= 2:
             return False
@@ -144,6 +144,7 @@ def check_if_can_book(user_id):
     except Exception as e:
         print(f"Error checking if user can book: {e}")
         return False
+
 
 class checkIfAdmin(Resource):
     def get(self):
@@ -1013,7 +1014,6 @@ class GetServices(Resource):
             sql_query = "SELECT * FROM SERVICES"
             cursor.execute(sql_query)
             services = cursor.fetchall()
-            print("services:", services)
 
             services_list = []
             for service in services:
@@ -1048,7 +1048,7 @@ class CreateBooking(Resource):
 
         # check if user can book. 
         print("before")
-        print(check_if_can_book(username))
+        print(check_if_can_book(username, cursor))
         print("after")
 
         try:
@@ -1425,7 +1425,7 @@ class CancelBooking(Resource):
 
             sql_query = """
                 INSERT INTO BOOKINGS_HISTORY (ID, USER, PROGRAMME, TYPE, DAY, HOUR, TRAINER, STATUS) 
-                VALUES (%s, %s, %s, %s, %s, %s, %s, 'completed')
+                VALUES (%s, %s, %s, %s, %s, %s, %s, 'canceled')
             """
             cursor.execute(sql_query, booking)  # Don't use string interpolation here
             database.commit()
