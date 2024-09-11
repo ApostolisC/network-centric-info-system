@@ -9,41 +9,159 @@
             font-family: Arial, sans-serif;
             background-color: #111213;
             color: white;
+            margin: 0;
+            padding: 0;
         }
-        form {
-            max-width: 600px;
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin: 20px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #242132;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
             margin: 0 auto;
         }
+
         label {
             display: block;
             margin: 10px 0 5px;
+            color: white;
+            font-size: 1rem;
         }
+
         input, select, button {
             width: 100%;
             padding: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             border-radius: 5px;
-            border: none;
+            border: 1px solid #333;
+            background-color: #333;
+            color: white;
         }
+
+        select {
+            width: 100%;
+        }
+
         button {
             background-color: yellow;
-            color: #111213;
+            color: black;
             font-size: 1rem;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
+
+        button:hover {
+            background-color: #f4c542;
+        }
+
+        input[type="date"] {
+            cursor: pointer;
+        }
+
+        #search-btn {
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+
+        .appointment-title {
+            margin-bottom: 25px;
+        }
+
+        .pick-time-container {
+            max-width: 500px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: left;
+            margin: 0 auto;
+            margin-top: 20px;
+        }
+
+        .time-btn {
+            width: fit-content;
+            padding: 10px;
+            margin: 5px;
+            border-radius: 5px;
+            background-color: #ff2953;
+            color: black;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .time-btn:hover {
+            background-color: #ff5c8a;
+        }
+
+        .confirm-booking-container {
+            display: none;
+            min-width: 500px;
+            margin: 20px auto; /* Same alignment as .container */
+            text-align: center; /* Center content */
+            background-color: #242132; /* Same background color */
+            padding: 20px;
+            border-radius: 10px;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .confirm-booking-container button {
+            background-color: yellow;
+            color: black;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            border-radius: 5px;
+            padding: 10px;
+            margin-top: 20px;
+        }
+
+        .confirm-booking-container button:disabled {
+            background-color: gray;
+        }
+
+
+
+        .confirm-booking-container p {
+            text-align: left;
+        }
+
+
+
     </style>
 </head>
 <body>
-    {% include 'nav.html' %}
-    <h1>Book an Appointment</h1>
-    <div>
-        <label for="program">Choose a Program:</label>
-        <select id="program" name="program">
-        </select>
-        <label for="date">Choose a Date:</label>
-        <input type="date" id="date" name="date" value="2024-08-30">
-        <button id="search-btn">Check Availability & Book</button>
+    <div class="hero_area">
+        {% include 'nav.html' %}
+        <h1 class="appointment-title">Book an Appointment</h1>
+        <div class="container">
+            <label for="program">Choose a Program:</label>
+            <select id="program" name="program">
+            </select>
+            <label for="date">Choose a Date:</label>
+            <input type="date" id="date" name="date" value="2024-08-30">
+            <button id="search-btn">Check Availability & Book</button>
+        </div>
+
+        <div class="pick-time-container" id="pt-container">
+
+        </div>
+
+        <div class="confirm-booking-container">
+            <p id="selected-time">Selected Time:</p>
+            <button id="confirm-booking-btn" disabled>Confirm Booking</button>
+        </div>
     </div>
+
 
     <script>
         document.getElementById('search-btn').addEventListener('click', function() {
@@ -64,8 +182,33 @@
                     if (data.error) {
                         alert(data.error);
                     } else {
-                        console.log(data);
-                        // use data to display available slots
+                        // add one button per result inside the pick-time-container with text as the time
+                        // the result data is an array of json dictionaries. each dict is one result. the key is the id and inside we have:
+                        // capacity, day, hour, id (in database), title, trainer
+                        const pickTimeContainer = document.querySelector('.pick-time-container');
+                        pickTimeContainer.innerHTML = '';
+                        data.forEach(result => {
+                            const button = document.createElement('button');
+                            button.className = 'time-btn';
+                            button.textContent = result.hour;
+                            button.addEventListener('click', function() {
+                                // change text of selected-time <p> to the selected time
+                                const selectedTime = document.getElementById('selected-time');
+                                selectedTime.innerHTML = `Selected Time: <span style="margin-left: 10px;">${result.hour}</span>`;
+
+                                // save the selected time in the confirm button
+                                const confirmBookingBtn = document.getElementById('confirm-booking-btn');
+                                confirmBookingBtn.disabled = false;
+                                confirmBookingBtn.dataset.timeId = result.id;
+
+                            });
+                            pickTimeContainer.appendChild(button);
+                        });
+
+
+                        // show the confirm booking container
+                        const confirmBookingContainer = document.querySelector('.confirm-booking-container');
+                        confirmBookingContainer.style.display = 'block';
                     }
                 });
 
@@ -88,6 +231,30 @@
                     });
 
                 });
+
+            // click event for confirm booking button
+            document.getElementById('confirm-booking-btn').addEventListener('click', function() {
+                // get the selected time id from the button dataset
+                const timeId = this.dataset.timeId;
+                // send a request to book-appointment endpoint with the selected time id
+                fetch('/create-booking', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ "schedule_id": timeId })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        // if the booking was successful, alert the user
+                        if (data.success) {
+                            alert("Booking successful!");
+                        } else {
+                            // if the booking was not successful, alert the user
+                            alert("Error:",data.error);
+                        }
+                    });
+            });
         });
     </script>
 </body>

@@ -969,6 +969,47 @@ class Bookings(Resource):
             return redirect('/login/')
 
         return make_response(render_template('bookings.html'))
+    
+class CreateBooking(Resource):
+    def post(self):
+        if not check_token():
+            return jsonify({'message': 'Unauthorized'}), 401
+
+        data = request.get_json(force=True)
+        username = get_user(session['token'])
+        schedule = data.get('schedule_id')
+
+        try:
+            # get programme, day, hour, trainer from programme_schedule
+            sql_query = "SELECT PROGRAMME, DAY, HOUR, TRAINER FROM PROGRAMME_SCHEDULE WHERE ID=%s"
+            cursor.execute(sql_query, (schedule,))
+            result = cursor.fetchone()
+
+            if not result:
+                return jsonify({'message': 'Schedule not found'}), 404
+            
+            programme, day, hour, trainer = result
+
+            # get title and type from gymnastic_programmes 
+            sql_query = "SELECT TITLE, TYPE FROM GYMNASTIC_PROGRAMMES WHERE ID=%s"
+            cursor.execute(sql_query, (programme,))
+            result = cursor.fetchone()
+
+            if not result:
+                return jsonify({'message': 'Programme not found'}), 404
+            
+            programme_title, programme_type = result
+
+
+
+            sql_query = "INSERT INTO BOOKINGS (USER, PROGRAMME, TYPE, DAY, HOUR, TRAINER) VALUES (%s, %s, %s, %s, %s, %s)"
+            cursor.execute(sql_query, (username, programme_title, programme_type, day, hour, trainer))
+            database.commit()
+
+            return 200
+        except Exception as e:
+            database.rollback()
+            return jsonify({'message': 'Failed to create booking'}), 500
 class GetProgrammes(Resource):
     def get(self):
         try:
@@ -1277,6 +1318,7 @@ api.add_resource(Services, '/services/')
 api.add_resource(GetServices, '/get-services/')
 api.add_resource(GetSchedule, '/get-schedule/')
 api.add_resource(Bookings, '/bookings/')
+api.add_resource(CreateBooking, '/create-booking/')
 api.add_resource(GetBookings, '/get-bookings/')
 api.add_resource(GetProgrammes, '/get-programmes/')
 api.add_resource(History, '/history/')
