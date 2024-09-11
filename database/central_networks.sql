@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 11, 2024 at 10:19 PM
+-- Generation Time: Sep 11, 2024 at 10:42 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -41,8 +41,8 @@ CREATE TABLE `accounts` (
 INSERT INTO `accounts` (`USERNAME`, `PASSWORD`, `ROLE`, `ENABLED`) VALUES
 ('1', '$argon2id$v=19$m=65536,t=3,p=4$PauM7t9ikiZP85ZeQnvMQw$7ow4kAHvIJ4+MIYvDnKD4D6OKV8kgJ7PdHDqYWP1fgU', 'admin', 0),
 ('a@a', '$argon2id$v=19$m=65536,t=3,p=4$w3y8CuNWpnZgupMnaHGO2w$3RcxqDO72tJeQ2mOPuP4Vd6rLCpF/dlveeTzHhWAVLk', 'admin', 1),
-('l@k', '$argon2id$v=19$m=65536,t=3,p=4$rljf9FB5hTklxlv4HJkT7g$5ZCFMzrg+B0PY5GxYP1Pc5twvURquG5a6wD9vW1JVfw', NULL, 0),
-('test', '$argon2id$v=19$m=65536,t=3,p=4$i1416k43OWKadO0j4Ui6Gw$5DpTISg0JZi0f3CgkAV4PaDK/CQmRUpw0FucpIdEKrw', 'user', 0);
+('admin', '$argon2id$v=19$m=65536,t=3,p=4$PYKlbBL4sRQhmfg+ukJY5Q$uAyvk9C7/Q1BOWjTwGjY38Mj974Ni2FF8zCdazWZ3Lc', 'admin', 0),
+('l@k', '$argon2id$v=19$m=65536,t=3,p=4$rljf9FB5hTklxlv4HJkT7g$5ZCFMzrg+B0PY5GxYP1Pc5twvURquG5a6wD9vW1JVfw', NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -65,8 +65,8 @@ CREATE TABLE `bookings` (
 --
 
 INSERT INTO `bookings` (`ID`, `USER`, `PROGRAMME`, `TYPE`, `DAY`, `HOUR`, `TRAINER`) VALUES
-(6, 'a@a', 'pilates', 'testt', '2024-09-12', '02:25:00.000000', '14'),
-(7, 'a@a', 'pilates', 'testt', '2024-09-12', '02:25:00.000000', '14');
+(8, 'a@a', 'pilates', 'testt', '2024-09-12', '04:15:00.000000', '14'),
+(9, 'a@a', 'pilates', 'testt', '2024-09-12', '02:25:00.000000', '14');
 
 -- --------------------------------------------------------
 
@@ -249,7 +249,7 @@ INSERT INTO `users` (`USERNAME`, `NAME`, `SURNAME`, `COUNTRY`, `CITY`, `ADDRESS`
 ('a@a', 'Akkk', 'C', 'Australia', 'Aberfoyle', 'jjj', 'a@a', '6983748556'),
 ('l@k', 'firstname', 'lastname', 'country', 'city', 'address', 'l@k', '1029384756'),
 ('1', 'sot', '1', 'Angola', 'Lobito', 'jjj', '1', '1'),
-('test', 'test', 'test', 'Andorra', 'Andorra la Vella', 'test', 'test', 'test');
+('admin', 'test', 'test', 'Afghanistan', '', '', 'admin', 'test');
 
 --
 -- Indexes for dumped tables
@@ -327,7 +327,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `bookings`
 --
 ALTER TABLE `bookings`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `gymnastic_programmes`
