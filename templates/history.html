@@ -1,45 +1,130 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title>Booking History</title>
+
     <style>
         body {
             font-family: Arial, sans-serif;
             background-color: #111213;
             color: white;
-            padding: 20px;
-        }
-        .history {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        .history-item {
-            padding: 10px;
-            border-bottom: 1px solid #333;
-        }
-        .history-item:last-child {
-            border-bottom: none;
-        }
-        .history-item h3 {
-            color: yellow;
             margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .history-container {
+            width: 75vw;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #242132;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #333;
+            color: #fff;
+        }
+
+        td {
+            color: #f4f4f4;
+        }
+
+        tr:hover {
+            background-color: #444;
+        }
+
+        .no-history {
+            text-align: center;
+            margin-top: 20px;
+            color: #f4c542;
         }
     </style>
 </head>
 <body>
-    {% include 'nav.html' %}
-    <h1>Your Booking History</h1>
-    <div class="history">
-        <div class="history-item">
-            <h3>Weight Loss Program</h3>
-            <p>Date: 2024-08-01 | Time: 10:00 AM</p>
-        </div>
-        <div class="history-item">
-            <h3>Strength Training</h3>
-            <p>Date: 2024-08-03 | Time: 02:00 PM</p>
+    <div class="hero_area">
+        {% include 'nav.html' %}
+        <h1>Your Booking History</h1>
+        <div class="history-container">
+            <table id="history-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Programme</th>
+                        <th>Type</th>
+                        <th>Day</th>
+                        <th>Hour</th>
+                        <th>Trainer</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Booking history will be appended here -->
+                </tbody>
+            </table>
+            <div id="no-history" class="no-history" style="display: none;">
+                You have no booking history.
+            </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/get-history')
+                .then(response => response.json())
+                .then(data => {
+                    const historyTableBody = document.querySelector('#history-table tbody');
+                    const noHistoryDiv = document.getElementById('no-history');
+
+                    if (data.length === 0) {
+                        noHistoryDiv.style.display = 'block'; // Show no history message
+                    } else {
+                        noHistoryDiv.style.display = 'none'; // Hide no history message
+                        historyTableBody.innerHTML = ''; // Clear the table
+
+                        data.forEach(record => {
+                            const row = document.createElement('tr');
+
+                            row.innerHTML = `
+                                <td>${record.id}</td>
+                                <td>${record.programme}</td>
+                                <td>${record.type}</td>
+                                <td>${record.day}</td>
+                                <td>${record.hour}</td>
+                                <td>${record.trainer}</td>
+                                <td>${record.status || 'Pending'}</td>
+                                <td>${record.date}</td>
+                            `;
+
+                            historyTableBody.appendChild(row);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching booking history:', error);
+                });
+        });
+    </script>
 </body>
 </html>

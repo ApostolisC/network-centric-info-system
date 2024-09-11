@@ -1,89 +1,120 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gym Front Page</title>
-    <!-- Font Awesome CDN for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            font-family: Arial, sans-serif;
-            color: white;
-            background-color: #333; /* Fallback color */
-        }
-        .main_container {
-            height: 85vh;
-            background-color: #111213;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding-top: 60px; /* Adjust for navbar height */
-            position: relative;
-        }
-        .main_container h1 {
-            font-size: 4rem;
-            font-weight: bold;
-            line-height: 1.2;
-            max-width: 80%;
-            margin: 100px auto 0;
-            color: yellow;
-            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        }
+    <!-- Basic -->
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!-- Mobile Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <!-- Site Metas -->
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
 
-        .main_container h2 {
-            font-size: 4rem;
-            font-weight: bold;
-            line-height: 1.2;
-            max-width: 80%;
-            margin: 100px auto;
-            color: rgb(170, 170, 167);
-            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        }
+    <title>ARS-Gym</title>
 
-        .main_container p {
-            font-size: 1.5rem;
-            color: #ddd;
-            margin-top: 20px;
-        }
-        .features {
-            display: flex;
-            justify-content: center;
-            margin-top: 40px;
-        }
-        .features a {
-            color: yellow;
-            text-decoration: none;
-            font-size: 1.2rem;
-            padding: 10px 20px;
-            border: 2px solid yellow;
-            border-radius: 5px;
-            margin: 20px;
-            transition: background-color 0.3s, color 0.3s;
-        }
-        .features a:hover {
-            background-color: yellow;
-            color: #111213;
-        }
-    </style>
-</head>
-<body>
-    <!-- Include the navigation bar -->
-    {% include 'nav.html' %}
+    <!-- slider stylesheet -->
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
 
-    <div class="main_container">
-        <h1>Transform Your Strength, Elevate Your Life</h1>
-        <h2>No time to Duck around</h2>
-        <div class="features">
-            <a href="/services">View Services</a>
-            <a href="/bookings">Book an Appointment</a>
-            <a href="/news">News & Announcements</a>
+    <!-- bootstrap core css -->
+    <link rel="stylesheet" type="text/css" href="/static/styles/bootstrap.css" />
+
+    
+    </head>
+    <body>
+    <div class="hero_area">
+        <!-- Include the navigation bar -->
+        {% include 'nav.html' %}
+        <!-- slider section -->
+        <section class=" slider_section position-relative">
+        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner">
+            <div class="carousel-item active">
+                <div class="container">
+                <div class="col-lg-10 col-md-11 mx-auto">
+                    <div class="detail-box">
+                    <div>
+                        <h2>
+                        ARS-Gym
+                        </h2>
+                        <h1>
+                        View our Services
+                        </h1>
+                        <p>
+                        Transfrom your strength. Elevate your life.
+                        </p>
+                        <div class="">
+                        <a href="/services">
+                            SERVICES
+                        </a>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="container">
+                <div class="col-lg-10 col-md-11 mx-auto">
+                    <div class="detail-box">
+                    <div>
+                        <h2>
+                        ARS-Gym
+                        </h2>
+                        <h1>
+                        Book an Appointment
+                        </h1>
+                        <p>
+                        Transfrom your strength. Elevate your life.
+                        </p>
+                        <div class="">
+                        <a href="/bookings">
+                            BOOK
+                        </a>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="container">
+                <div class="col-lg-10 col-md-11 mx-auto">
+                    <div class="detail-box">
+                    <div>
+                        <h2>
+                        ARS-Gym
+                        </h2>
+                        <h1>
+                        View Announcements
+                        </h1>
+                        <p>
+                        Transfrom your strength. Elevate your life.
+                        </p>
+                        <div class="">
+                        <a href="/news">
+                            ANNOUNCEMENTS
+                        </a>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+            </div>
+            <ol class="carousel-indicators">
+            <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+            <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+            <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+            </ol>
         </div>
+        </section>
+        <!-- end slider section -->
     </div>
-</body>
+
+    <script src="static/js/jquery-3.4.1.min.js"></script>
+    <script src="static/js/bootstrap.js"></script>
+
+    </body>
 </html>

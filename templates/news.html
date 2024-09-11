@@ -1,0 +1,142 @@
+<!-- Create news page. when page loads fetch from get-news and load news-->
+
+<html>
+    <head>
+        <title>ARS-Gym</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+
+        <style>
+           /* Container for individual news items */
+            .news {
+                background-color: #242132; /* Adjust background color if needed */
+                color: white; /* Text color */
+                border-radius: 10px;
+                padding: 20px;
+                margin-bottom: 20px; /* Spacing between news items */
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            }
+
+            /* Flex container for title and date */
+            .news-header {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 10px; /* Spacing between header and content */
+            }
+
+            /* Styling for the title */
+            .news-title {
+                font-size: 1.5rem;
+                font-weight: bold;
+            }
+
+            /* Styling for the date */
+            .news-date {
+                font-size: 1rem;
+                color: #f4c542; /* Adjust color if needed */
+            }
+
+            /* Styling for the image */
+            .news-image {
+                width: 100%; /* Full-width image */
+                border-radius: 10px;
+                margin: 10px 0; /* Spacing around image */
+            }
+
+            /* Styling for the content */
+            .news-content {
+                font-size: 1rem;
+                margin-bottom: 10px; /* Spacing between content and author */
+            }
+
+            /* Styling for the author */
+            .news-author {
+                font-size: 0.9rem;
+                font-style: italic;
+            }
+
+            .announcements-title{
+                color: white;
+                text-align: center;
+                font-size: 2rem;
+                margin-top: 20px;
+                margin-bottom: 40px;
+            }
+
+            .hero_area {
+                overflow-y: scroll;
+            }
+
+
+        </style>
+
+    </head>
+    <body>
+        <!-- header section strats -->
+        <header class="hero_area">
+            {% include 'nav.html' %}
+            <h1 class="announcements-title">Announcements</h1>
+            <div class="container">
+                
+            </div>
+
+        </header>
+        <!-- end header section -->
+
+        <script>
+            fetch('/get-news')
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+        
+                    const newsContainer = document.querySelector('.container');
+                    newsContainer.innerHTML = '';
+        
+                    data.forEach(news => {
+                        const newsDiv = document.createElement('div');
+                        newsDiv.classList.add('news');
+        
+                        // Create header with title and date
+                        const headerDiv = document.createElement('div');
+                        headerDiv.classList.add('news-header');
+                        
+                        const titleDiv = document.createElement('div');
+                        titleDiv.classList.add('news-title');
+                        titleDiv.textContent = news.title;
+                        
+                        const dateDiv = document.createElement('div');
+                        dateDiv.classList.add('news-date');
+                        dateDiv.textContent = news.date;
+        
+                        headerDiv.appendChild(titleDiv);
+                        headerDiv.appendChild(dateDiv);
+        
+                        // Create image element
+                        const image = document.createElement('img');
+                        image.classList.add('news-image');
+                        image.src = news.image; // Adjust property name as needed
+        
+                        // Create content element
+                        const contentDiv = document.createElement('div');
+                        contentDiv.classList.add('news-content');
+                        contentDiv.textContent = news.content;
+        
+                        // Create author element
+                        const authorDiv = document.createElement('div');
+                        authorDiv.classList.add('news-author');
+                        authorDiv.textContent = `By ${news.author}`;
+        
+                        // Append everything to the newsDiv
+                        newsDiv.appendChild(headerDiv);
+                        newsDiv.appendChild(image);
+                        newsDiv.appendChild(contentDiv);
+                        newsDiv.appendChild(authorDiv);
+        
+                        newsContainer.appendChild(newsDiv);
+                    });
+                });
+        </script>
+        
+    </body>
+
+</html>

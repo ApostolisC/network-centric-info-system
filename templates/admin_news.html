@@ -131,7 +131,6 @@
                             <div class="news-overlay">
                                 <h2 class="news-title">${news.title}</h2>
                                 <div class="news-buttons">
-                                    <button class="btn edit-news-btn">Edit</button>
                                     <button class="btn delete-news-btn">Delete</button>
                                     <button class="btn visibility-btn">
                                         <i class="fas ${visibilityIcon}"></i>
@@ -141,13 +140,7 @@
                         `;
                         newsContainer.appendChild(newsItem);
 
-                        // Attach event listeners to newly created buttons
-                        newsItem.querySelector('.edit-news-btn').addEventListener('click', function(event) {
-                            // we do the same thing, so we could just let the event occur.
-                            event.stopPropagation();
-                            document.getElementById('edit-news-popup').style.display = 'block';
-                            document.getElementById('edit-news-overlay').style.display = 'block';
-                        });
+                        
 
                         newsItem.querySelector('.delete-news-btn').addEventListener('click', function(event) {
                             event.stopPropagation();

@@ -9,16 +9,18 @@
             font-family: Arial, sans-serif;
             background-color: #111213;
             color: white;
+            max-height: 100vh;
+            overflow-y: hidden;
         }
         .container {
             max-width: 800px;
             margin: 10px auto;
             padding: 20px;
-            background-color: #222;
+            background-color: #242132;
             border-radius: 10px;
         }
         h1 {
-            color: yellow;
+            color: white;
             text-align: center;
         }
         .section {
@@ -34,6 +36,7 @@
         label {
             display: block;
             margin-bottom: 5px;
+            color: white;
         }
         input {
             width: 100%;
@@ -57,74 +60,86 @@
         .logout-btn {
             background-color: red;
             color: white;
+            border-radius: 10px;
+        }
+
+        .hero_area {
+            overflow-y: scroll;
+        }
+
+        .update-btn, .chng-btn, .open-history-btn{
+            margin-top: 10px;
+            border-radius: 10px;
         }
     </style>
 </head>
 <body>
-    {% include 'nav.html' %}
-    <div class="container">
-        <h1>User Profile</h1>
-
-        <!-- Booking History Section -->
-        <div class="section">
-            <h2>Booking History</h2>
-            <a href="/history"><button>Open History</button></a>
-        </div>
-
-        <!-- Update Profile Section -->
-        <div class="section">
-            <h2>Update Profile Information</h2>
-            <form id="update-profile-form">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" disabled>
-
-                <label for="name">Name:</label>
-                <input type="text" id="name" name="name">
-
-                <label for="surname">Surname:</label>
-                <input type="text" id="surname" name="surname">
-
-                <label for="country">Country:</label>
-                <input type="text" id="country" name="country">
-
-                <label for="city">City:</label>
-                <input type="text" id="city" name="city">
-
-                <label for="address">Address:</label>
-                <input type="text" id="address" name="address">
-
-                <label for="email">Email:</label>
-                <input type="text" id="email" name="email">
-
-                <label for="phone">Phone:</label>
-                <input type="text" id="phone" name="phone">
-
-                <button type="submit">Update Profile</button>
-            </form>
-        </div>
-
-        <!-- Change Password Section -->
-        <div class="section">
-            <h2>Change Password</h2>
-            <form id="change-password-form">
-                <label for="current-password">Current Password:</label>
-                <input type="password" id="current-password" name="current_password">
-
-                <label for="new-password">New Password:</label>
-                <input type="password" id="new-password" name="new_password">
-
-                <label for="confirm-password">Confirm New Password:</label>
-                <input type="password" id="confirm-password" name="confirm_password">
-
-                <button type="submit">Change Password</button>
-            </form>
-        </div>
-
-        <!-- Logout Button -->
-        <div class="section">
-            <form id="logout-form">
-                <button type="submit" class="logout-btn">Logout</button>
-            </form>
+    <div class="hero_area">
+        {% include 'nav.html' %}
+        <div class="container">
+            <h1>User Profile</h1>
+    
+            <!-- Booking History Section -->
+            <div class="section">
+                <h2>Booking History</h2>
+                <a href="/history"><button class="open-history-btn">Open History</button></a>
+            </div>
+    
+            <!-- Update Profile Section -->
+            <div class="section">
+                <h2>Update Profile Information</h2>
+                <form id="update-profile-form">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" disabled>
+    
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name">
+    
+                    <label for="surname">Surname:</label>
+                    <input type="text" id="surname" name="surname">
+    
+                    <label for="country">Country:</label>
+                    <input type="text" id="country" name="country">
+    
+                    <label for="city">City:</label>
+                    <input type="text" id="city" name="city">
+    
+                    <label for="address">Address:</label>
+                    <input type="text" id="address" name="address">
+    
+                    <label for="email">Email:</label>
+                    <input type="text" id="email" name="email">
+    
+                    <label for="phone">Phone:</label>
+                    <input type="text" id="phone" name="phone">
+    
+                    <button class="update-btn" type="submit">Update Profile</button>
+                </form>
+            </div>
+    
+            <!-- Change Password Section -->
+            <div class="section">
+                <h2>Change Password</h2>
+                <form id="change-password-form">
+                    <label for="current-password">Current Password:</label>
+                    <input type="password" id="current-password" name="current_password">
+    
+                    <label for="new-password">New Password:</label>
+                    <input type="password" id="new-password" name="new_password">
+    
+                    <label for="confirm-password">Confirm New Password:</label>
+                    <input type="password" id="confirm-password" name="confirm_password">
+    
+                    <button class="chng-btn" type="submit">Change Password</button>
+                </form>
+            </div>
+    
+            <!-- Logout Button -->
+            <div class="section">
+                <form id="logout-form">
+                    <button type="submit" class="logout-btn">Logout</button>
+                </form>
+            </div>
         </div>
     </div>
 
