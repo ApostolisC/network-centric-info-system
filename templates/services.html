@@ -1,37 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Gym Services</title>
-        <style>
-            body {
-                font-family: Arial, sans-serif;
-                background-color: #111213;
-                color: white;
-            }
-            .services {
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: space-around;
-            }
-            .service {
-                margin: 20px;
-                padding: 20px;
-                border: 2px solid yellow;
-                font-size: 20px;
-                flex-basis: 45%; /* Adjust the percentage as needed */
-                box-sizing: border-box;
-                line-height: 2.1rem;
-            }
+<head>
+    <!-- Basic -->
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!-- Mobile Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <!-- Site Metas -->
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
 
-            .service h2 {
-                color: yellow;
-            }
-            h1 {
-                text-align: center;
-            }
+    <title>Services</title>
 
+<<<<<<< HEAD
             img{
                 display: block;
                 margin: 0 auto;
@@ -69,32 +51,77 @@
                     Our classes offer a range of styles to suit different fitness levels and preferences, from gentle Hatha to dynamic Vinyasa. Yoga helps reduce stress, improve balance, and increase body awareness. Our experienced instructors will guide you through each pose, creating a relaxing and rejuvenating experience.</p>
             </div>
             <!-- Add more services here -->
+=======
+    <!-- slider stylesheet -->
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
+
+    <!-- bootstrap core css -->
+    <link rel="stylesheet" type="text/css" href="static/styles/bootstrap.css" />
+
+    <!-- fonts style -->
+    <link href="https://fonts.googleapis.com/css?family=Poppins:400,600,700&display=swap" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="static/styles/style.css" rel="stylesheet" />
+    <!-- responsive style -->
+    <link href="static/styles/responsive.css" rel="stylesheet" />
+</head>
+<body>
+    {% include 'nav.html' %}
+    <h1>Our Services</h1>
+    <hr>
+    <div class="services">
+        <div class="service">
+            <img src="/static/images/weight_loss.jpg" alt="Weight Loss Program">
+            <h2>Weight Loss Program</h2>
+            <p>Our Weight Loss Program is designed to help you achieve your weight loss goals in a healthy and sustainable way.
+                Combining expert guidance, personalized nutrition plans, and effective workouts, this program focuses on burning fat, building lean muscle, and boosting your metabolism. Our trainers will support you every step of the way, providing motivation and accountability to help you reach your desired body composition.</p>
+>>>>>>> 67bb9ad3b6e0f47f8182f4ffc8c9d6ca57c1edf4
         </div>
+        <div class="service">
+            <img src="/static/images/strength_training.jpg" alt="Strength Training">
+            <h2>Strength Training</h2>
+            <p>Build strength,
+                power, and endurance with our Strength Training Program. Whether you're a beginner or an experienced athlete, our tailored workouts will help you achieve your fitness goals. Our program focuses on progressive overload, proper form, and variety to challenge your muscles and prevent plateaus. Our trainers will provide expert instruction and support to help you maximize your results.</p>
+        </div>
+        <div class="service">
+            <img src="/static/images/cardio.jpg" alt="Cardio Program">
+            <h2>Cardio Program</h2>
+            <p>Get your heart pumping and burn calories with our Cardio Program.
+                This program offers a variety of cardiovascular exercises, including running, cycling, swimming, and group fitness classes, to help you improve your cardiovascular health, increase endurance, and boost energy levels. Our trainers will guide you through effective workouts, ensuring you stay motivated and challenged.</p>
+        </div>
+        <div class="service">
+            <img src="/static/images/yoga.jpg" alt="Yoga Program">
+            <h2>Yoga Program</h2>
+            <p>Find inner peace and improve flexibility with our Yoga Program.
+                Our classes offer a range of styles to suit different fitness levels and preferences, from gentle Hatha to dynamic Vinyasa. Yoga helps reduce stress, improve balance, and increase body awareness. Our experienced instructors will guide you through each pose, creating a relaxing and rejuvenating experience.</p>
+        </div>
+        <!-- Add more services here -->
+    </div>
 
-        <script>
-            // when page loads fetch data from /get-services with get request and display it in the services div
-            fetch('/get-services')
-                .then(response => response.json())
-                .then(data => {
-                    console.log("data", data);
-                    const services = document.querySelector('.services');
-                    data.forEach(service => {
-                        const div = document.createElement('div');
-                        const image_div = document.createElement('div');
-                        image_div.className = "service-image";
-                        image_div.style.backgroundImage = `url(${service.image})`;
-                        div.classList.add('service');
-                        div.innerHTML = `
-                            <h2>${service.title}</h2>
-                            <p>${service.description}</p>
-                        `;
-                        services.appendChild(div);
-                    });
-                })
-                .catch(error => console.error(error));
-        </script>
+    <script>
+        // when page loads fetch data from /get-services with get request and display it in the services div
+        fetch('/get-services')
+            .then(response => response.json())
+            .then(data => {
+                console.log("data", data);
+                const services = document.querySelector('.services');
+                data.forEach(service => {
+                    const div = document.createElement('div');
+                    const image_div = document.createElement('div');
+                    image_div.className = "service-image";
+                    image_div.style.backgroundImage = `url(${service.image})`;
+                    div.classList.add('service');
+                    div.innerHTML = `
+                        <h2>${service.title}</h2>
+                        <p>${service.description}</p>
+                    `;
+                    services.appendChild(div);
+                });
+            })
+            .catch(error => console.error(error));
+    </script>
 
-        </script>
+    </script>
 
-    </body>
+</body>
 </html>
