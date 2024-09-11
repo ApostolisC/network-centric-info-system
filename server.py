@@ -78,6 +78,72 @@ def check_admin():
             return True
     return False
 
+def update_booking_history():
+    # get all bookings and for each one that has passed day and hour, move it to the history.
+    # also delete the booking from the bookings table
+    try:
+        sql_query = "SELECT * FROM BOOKINGS"
+        cursor.execute(sql_query)
+        bookings = cursor.fetchall()
+
+        for booking in bookings:
+            booking_id = booking[0]
+            user = booking[1]
+            programme = booking[2]
+            programme_type = bookings[3]
+            day = booking[4]
+            hour = booking[5]
+            trainer = booking[6]
+
+
+            # check if current date and time is greater than the booking date and time
+            current_date = datetime.datetime.now().date()
+            current_time = datetime.datetime.now().time()
+
+            if current_date > day or (current_date == day and current_time > hour):
+                # get programme title from programme
+                sql_query = "SELECT TITLE FROM GYMNASTIC_PROGRAMMES WHERE ID=%s"
+                cursor.execute(sql_query, (programme,))
+                programme = cursor.fetchone()[0]
+
+                sql_query = "INSERT INTO BOOKING_HISTORY (ID, USER, PROGRAMME, TYPE, DAY, HOUR, TRAINER, STATUS) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+                cursor.execute(sql_query, (booking_id, user, programme, programme_type, day, hour, trainer, 'canceled'))
+
+                sql_query = "DELETE FROM BOOKINGS WHERE ID=%s"
+                cursor.execute(sql_query, (booking_id,))
+
+        database.commit()
+    except Exception as e:
+        database.rollback()
+        print(f"Error updating booking history: {e}")
+        return False
+    
+def check_if_can_book(user_id):
+    # get all bookings from history for user and if there are 2 or more that are canceled withing the current week return False
+    try:
+        current_date = datetime.datetime.now().date()
+        current_week = current_date.isocalendar()[1]
+
+        sql_query = "SELECT * FROM BOOKING_HISTORY WHERE USER=%s AND STATUS='canceled'"
+        cursor.execute(sql_query, (user_id,))
+        bookings = cursor.fetchall()
+
+        count = 0
+        for booking in bookings:
+            booking_date = booking[4]
+            booking_week = booking_date.isocalendar()[1]
+
+            if booking_week == current_week:
+                count += 1
+
+        if count >= 2:
+            return False
+
+        return True
+    except Exception as e:
+        print(f"Error checking if user can book: {e}")
+        return False
+
 class checkIfAdmin(Resource):
     def get(self):
         if check_token() and check_admin():
@@ -1270,6 +1336,45 @@ class PasswordReset(Resource):
 
         return 200
 
+class CancelBooking(Resource):
+    def post(self):
+        if not check_token():
+            abort(401)
+
+        data = request.get_json(force=True)
+        booking_id = data.get('id')
+
+        try:
+            # move to history
+            sql_query = "SELECT * FROM BOOKINGS WHERE ID=%s"
+            cursor.execute(sql_query, (booking_id,))
+            booking = cursor.fetchone()
+
+            if not booking:
+                return jsonify({'message': 'Booking not found'}), 404
+
+            # user can cancel only 2 hours before the booking
+            booking_date = datetime.datetime.strptime(booking[4], '%Y-%m-%d')
+            booking_hour = datetime.datetime.strptime(booking[5], '%H:%M:%S')
+            booking_datetime = datetime.datetime.combine(booking_date, booking_hour.time())
+            current_datetime = datetime.datetime.now()
+
+            if (booking_datetime - current_datetime).total_seconds() < 7200:
+                return jsonify({'message': 'Cannot cancel booking less than 2 hours before the booking'}), 400
+
+            sql_query = "INSERT INTO BOOKINGS_HISTORY (ID, USER, PROGRAMME, TYPE, DAY, HOUR, TRAINER, STATUS) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+            cursor.execute(sql_query, booking)
+            database.commit()
+
+            # delete from bookings
+            sql_query = "DELETE FROM BOOKINGS WHERE ID=%s"
+            cursor.execute(sql_query, (booking_id,))
+            database.commit()
+
+            return 200
+        except Exception as e:
+            database.rollback()
+            return jsonify({'message': 'Failed to cancel booking'}), 500
 ###################
 # User Routes
 api.add_resource(Index, '/')
@@ -1279,6 +1384,7 @@ api.add_resource(GetSchedule, '/get-schedule/')
 api.add_resource(Bookings, '/bookings/')
 api.add_resource(GetBookings, '/get-bookings/')
 api.add_resource(GetProgrammes, '/get-programmes/')
+api.add_resource(CancelBooking, '/cancel-booking/')
 api.add_resource(History, '/history/')
 api.add_resource(GetHistory, '/get-history/')
 api.add_resource(News, '/news/')
