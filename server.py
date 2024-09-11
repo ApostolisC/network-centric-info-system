@@ -1046,6 +1046,11 @@ class CreateBooking(Resource):
         username = get_user(session['token'])
         schedule = data.get('schedule_id')
 
+        # check if user can book. 
+        print("before")
+        print(check_if_can_book(username))
+        print("after")
+
         try:
             # get programme, day, hour, trainer from programme_schedule
             sql_query = "SELECT PROGRAMME, DAY, HOUR, TRAINER FROM PROGRAMME_SCHEDULE WHERE ID=%s"
@@ -1397,24 +1402,43 @@ class CancelBooking(Resource):
 
             if not booking:
                 return jsonify({'message': 'Booking not found'}), 404
+            
+            print("checkpoint 1", booking)
 
             # user can cancel only 2 hours before the booking
-            booking_date = datetime.datetime.strptime(booking[4], '%Y-%m-%d')
-            booking_hour = datetime.datetime.strptime(booking[5], '%H:%M:%S')
-            booking_datetime = datetime.datetime.combine(booking_date, booking_hour.time())
+            booking_date = booking[4]
+            booking_hour = booking[5]
+
+            print("1")
+            # combine booking date of datetime.date and booking hour of datetime.timedelta
+            booking_datetime = datetime.datetime.combine(booking_date, datetime.time()) + booking_hour
+            print("1.1")
             current_datetime = datetime.datetime.now()
 
+            print("checkpoint 2", current_datetime, type(current_datetime), booking_datetime, type(booking_datetime))
+            print(booking_datetime - current_datetime, (booking_datetime - current_datetime).total_seconds())
+
             if (booking_datetime - current_datetime).total_seconds() < 7200:
+                print("yes")
                 return jsonify({'message': 'Cannot cancel booking less than 2 hours before the booking'}), 400
 
-            sql_query = "INSERT INTO BOOKINGS_HISTORY (ID, USER, PROGRAMME, TYPE, DAY, HOUR, TRAINER, STATUS) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
-            cursor.execute(sql_query, booking)
+
+            sql_query = """
+                INSERT INTO BOOKINGS_HISTORY (ID, USER, PROGRAMME, TYPE, DAY, HOUR, TRAINER, STATUS) 
+                VALUES (%s, %s, %s, %s, %s, %s, %s, 'completed')
+            """
+            cursor.execute(sql_query, booking)  # Don't use string interpolation here
             database.commit()
+
+            print("checkpoint 4")
 
             # delete from bookings
             sql_query = "DELETE FROM BOOKINGS WHERE ID=%s"
+            print(sql_query%booking_id)
             cursor.execute(sql_query, (booking_id,))
             database.commit()
+
+            print("checkpoint 5")
 
             return 200
         except Exception as e:

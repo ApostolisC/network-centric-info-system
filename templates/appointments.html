@@ -97,6 +97,8 @@
                                 body: JSON.stringify({ id: bookingId })
                             })
                             .then(response => {
+
+                                console.log(response);
                                 if (response.ok) {
                                     alert('Booking cancelled successfully');
                                     location.reload(); // Refresh the page to reflect changes

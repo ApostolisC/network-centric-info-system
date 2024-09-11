@@ -148,7 +148,7 @@
             <select id="program" name="program">
             </select>
             <label for="date">Choose a Date:</label>
-            <input type="date" id="date" name="date" value="2024-08-30">
+            <input type="date" id="date" name="date">
             <button id="search-btn">Check Availability & Book</button>
         </div>
 
@@ -250,8 +250,6 @@
                         if (data.success) {
                             alert("Booking successful!");
                         } else {
-                            // if the booking was not successful, alert the user
-                            alert("Error:",data.error);
                         }
                     });
             });
