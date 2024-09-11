@@ -39,12 +39,12 @@
         .service {
             margin: 20px;
             padding: 20px;
-            border: 2px solid white;
+            border: 1px solid white;
             font-size: 20px;
             flex-basis: 45%; /* Adjust the percentage as needed */
             box-sizing: border-box;
             line-height: 2.1rem;
-            border-radius: 5%;
+            border-radius: 2%;
         }
 
         .service h2 {
@@ -52,11 +52,14 @@
         }
         h1 {
             text-align: center;
+            padding: 20px;
         }
 
         img{
             display: block;
             margin: 0 auto;
+            margin-bottom: 20px;
+            border-radius: 5%;
         }
     </style>
 </head>
@@ -64,6 +67,7 @@
     <div class="hero_area" style="max-height:20vh;">
         {% include 'nav.html' %}
         <header class="services_section">
+            <h1>Our Services</h1>
             <div class="services">
                 <div class="service">
                     <img src="/static/images/weight_loss.jpg" alt="Weight Loss Program">
