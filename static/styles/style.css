@@ -294,18 +294,18 @@ a:focus {
   border: 4px solid #ffffff;
 }
 
-.us_section {
+.services_section {
   background-image: url(../images/us-bg.jpg);
   background-size: cover;
   background-attachment: fixed;
   color: #ffffff;
 }
 
-.us_section .us_container {
+.services_section .services_container {
   padding-top: 25px;
 }
 
-.us_section .us_container .box {
+.services_section .services_container .box {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -320,7 +320,7 @@ a:focus {
   margin: 25px 10px 0 10px;
 }
 
-.us_section .us_container .box .img-box {
+.services_section .services_container .box .img-box {
   height: 100px;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -333,11 +333,11 @@ a:focus {
           justify-content: center;
 }
 
-.us_section .us_container .box .img-box img {
+.services_section .services_container .box .img-box img {
   max-width: 100%;
 }
 
-.us_section .us_container .box .detail-box h5 {
+.services_section .services_container .box .detail-box h5 {
   font-weight: bold;
 }
 
