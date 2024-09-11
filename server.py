@@ -30,7 +30,7 @@ cursor = database.cursor()
 def generate_token(username, exp=None):
     payload = {
         'username': username,
-        'exp': exp if exp else datetime.datetime.now(datetime.UTC) + datetime.timedelta(hours=1)  # Token expires in 1 hour
+        'exp': exp if exp else datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=1)  # Token expires in 1 hour
     }
     return jwt.encode(payload, app.secret_key, algorithm='HS256')
 

@@ -26,35 +26,37 @@
     <link href="/static/styles/responsive.css" rel="stylesheet" />
 </head>
 <body>
-    {% include 'nav.html' %}
-    <h1>Our Services</h1>
-    <hr>
-    <div class="services">
-        <div class="service">
-            <img src="/static/images/weight_loss.jpg" alt="Weight Loss Program">
-            <h2>Weight Loss Program</h2>
-            <p>Our Weight Loss Program is designed to help you achieve your weight loss goals in a healthy and sustainable way.
-                Combining expert guidance, personalized nutrition plans, and effective workouts, this program focuses on burning fat, building lean muscle, and boosting your metabolism. Our trainers will support you every step of the way, providing motivation and accountability to help you reach your desired body composition.</p>
+    <div class="hero_area">
+        {% include 'nav.html' %}
+        <h1>Our Services</h1>
+        <hr>
+        <div class="services">
+            <div class="service">
+                <img src="/static/images/weight_loss.jpg" alt="Weight Loss Program">
+                <h2>Weight Loss Program</h2>
+                <p>Our Weight Loss Program is designed to help you achieve your weight loss goals in a healthy and sustainable way.
+                    Combining expert guidance, personalized nutrition plans, and effective workouts, this program focuses on burning fat, building lean muscle, and boosting your metabolism. Our trainers will support you every step of the way, providing motivation and accountability to help you reach your desired body composition.</p>
+            </div>
+            <div class="service">
+                <img src="/static/images/strength_training.jpg" alt="Strength Training">
+                <h2>Strength Training</h2>
+                <p>Build strength,
+                    power, and endurance with our Strength Training Program. Whether you're a beginner or an experienced athlete, our tailored workouts will help you achieve your fitness goals. Our program focuses on progressive overload, proper form, and variety to challenge your muscles and prevent plateaus. Our trainers will provide expert instruction and support to help you maximize your results.</p>
+            </div>
+            <div class="service">
+                <img src="/static/images/cardio.jpg" alt="Cardio Program">
+                <h2>Cardio Program</h2>
+                <p>Get your heart pumping and burn calories with our Cardio Program.
+                    This program offers a variety of cardiovascular exercises, including running, cycling, swimming, and group fitness classes, to help you improve your cardiovascular health, increase endurance, and boost energy levels. Our trainers will guide you through effective workouts, ensuring you stay motivated and challenged.</p>
+            </div>
+            <div class="service">
+                <img src="/static/images/yoga.jpg" alt="Yoga Program">
+                <h2>Yoga Program</h2>
+                <p>Find inner peace and improve flexibility with our Yoga Program.
+                    Our classes offer a range of styles to suit different fitness levels and preferences, from gentle Hatha to dynamic Vinyasa. Yoga helps reduce stress, improve balance, and increase body awareness. Our experienced instructors will guide you through each pose, creating a relaxing and rejuvenating experience.</p>
+            </div>
+            <!-- Add more services here -->
         </div>
-        <div class="service">
-            <img src="/static/images/strength_training.jpg" alt="Strength Training">
-            <h2>Strength Training</h2>
-            <p>Build strength,
-                power, and endurance with our Strength Training Program. Whether you're a beginner or an experienced athlete, our tailored workouts will help you achieve your fitness goals. Our program focuses on progressive overload, proper form, and variety to challenge your muscles and prevent plateaus. Our trainers will provide expert instruction and support to help you maximize your results.</p>
-        </div>
-        <div class="service">
-            <img src="/static/images/cardio.jpg" alt="Cardio Program">
-            <h2>Cardio Program</h2>
-            <p>Get your heart pumping and burn calories with our Cardio Program.
-                This program offers a variety of cardiovascular exercises, including running, cycling, swimming, and group fitness classes, to help you improve your cardiovascular health, increase endurance, and boost energy levels. Our trainers will guide you through effective workouts, ensuring you stay motivated and challenged.</p>
-        </div>
-        <div class="service">
-            <img src="/static/images/yoga.jpg" alt="Yoga Program">
-            <h2>Yoga Program</h2>
-            <p>Find inner peace and improve flexibility with our Yoga Program.
-                Our classes offer a range of styles to suit different fitness levels and preferences, from gentle Hatha to dynamic Vinyasa. Yoga helps reduce stress, improve balance, and increase body awareness. Our experienced instructors will guide you through each pose, creating a relaxing and rejuvenating experience.</p>
-        </div>
-        <!-- Add more services here -->
     </div>
 
     <script>
